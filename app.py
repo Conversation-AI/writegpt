@@ -85,20 +85,14 @@ async def scrape_website(url):
 
 
 def get_visible_text(url):
-    # download and parse the HTML content of the website using BeautifulSoup
-    session = aiohttp.ClientSession()
-    response = session.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    # check if an event loop is already running
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
 
-    # find the main content area of the website using a heuristic algorithm
-    main_content = soup.find('main') or soup.find('div', {'class': 'main'}) or soup.find('div', {'class': 'content'}) or soup.find('div', {'class': 'article'}) or soup
-
-    # extract the visible text from the main content area of the website
-    text_elements = main_content.find_all(text=True)
-    visible_text = ''
-    for element in text_elements:
-        if element.parent.name not in ['script', 'style', 'meta', '[document]']:
-            visible_text += element.strip() + ' '
-
+    # run the scraper in an event loop
+    nest_asyncio.apply()
+    visible_text = loop.run_until_complete(scrape_website(url))
     return visible_text
-
