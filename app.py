@@ -34,9 +34,6 @@ def generate_email():
     # get the visible text for the website
     visible_text = get_visible_text(url)
 
-    # cap the visible_text to 1000 words
-    visible_text = ' '.join(visible_text[:1000])
-
     instructions = generate_instructions_v2(sender_info, recipient_info, prompt, word_count)
 
     # generate the email using OpenAI's GPT-3
@@ -52,7 +49,6 @@ def summarize_website():
 
     # get the visible text for the website
     visible_text = get_visible_text(data['url'])
-    visible_text = ' '.join(visible_text[:2000])
 
     # generate the summary using OpenAI's GPT-3
     response = openai.Completion.create(model="text-davinci-003", prompt="Summarize the following website:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
@@ -77,7 +73,7 @@ async def scrape_website(url):
             # extract the visible text from the text elements
             visible_text = ''
             for element in text_elements:
-                if element.parent.name not in ['script', 'style', 'meta', '[document]']:
+                if element.parent.name not in ['script', 'style', 'meta', '[document]'] and "<!--" not in str(element) and "-->" not in str(element):
                     visible_text += element.strip() + ' '
 
             # return the visible text
@@ -95,4 +91,6 @@ def get_visible_text(url):
     # run the scraper in an event loop
     nest_asyncio.apply()
     visible_text = loop.run_until_complete(scrape_website(url))
+    # cap the visible_text to 2000 words
+    visible_text = ' '.join(visible_text[:2000])
     return visible_text
