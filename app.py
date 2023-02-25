@@ -14,7 +14,6 @@ def hello_world():
     return 'Hello World!'
 
 # set up OpenAI
-#os.environ['OPENAI_API_KEY'] = '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'
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # set up the session
