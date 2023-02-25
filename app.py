@@ -51,7 +51,7 @@ def summarize_website():
     visible_text = get_visible_text(data['url'])
 
     # generate the summary using OpenAI's GPT-3
-    response = openai.Completion.create(model="text-davinci-003", prompt="Summarize the following website:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
+    response = openai.Completion.create(model="text-davinci-003", prompt="Correct this to standard English and then summarize what this company does in great details:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
     output = response["choices"][0]["text"]
 
     return output
@@ -91,6 +91,4 @@ def get_visible_text(url):
     # run the scraper in an event loop
     nest_asyncio.apply()
     visible_text = loop.run_until_complete(scrape_website(url))
-    # cap the visible_text to 2000 words
-    visible_text = ' '.join(visible_text[:2000])
-    return visible_text
+    return visible_text[:5000]
