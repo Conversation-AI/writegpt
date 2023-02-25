@@ -67,29 +67,28 @@ def generate_instructions_v2(sender_info, recipient_info, prompt, word_count):
 
 async def scrape_website(url):
     async with aiohttp.ClientSession() as session:
-        response = await session.get(url, timeout=60)
-        # create a BeautifulSoup object with the HTML content of the website
-        soup = BeautifulSoup(await response.text(), 'html.parser')
+        async with session.get(url, timeout=60) as response:
+            # create a BeautifulSoup object with the HTML content of the website
+            soup = BeautifulSoup(await response.text(), 'html.parser')
 
-        # find all HTML elements that contain visible text
-        text_elements = soup.find_all(text=True)
+            # find all HTML elements that contain visible text
+            text_elements = soup.find_all(text=True)
 
-        # extract the visible text from the text elements
-        visible_text = ''
-        for element in text_elements:
-            if element.parent.name not in ['script', 'style', 'meta', '[document]']:
-                visible_text += element.strip() + ' '
+            # extract the visible text from the text elements
+            visible_text = ''
+            for element in text_elements:
+                if element.parent.name not in ['script', 'style', 'meta', '[document]']:
+                    visible_text += element.strip() + ' '
 
-        # return the visible text
-        return visible_text
-
+            # return the visible text
+            return visible_text
 
 
 def get_visible_text(url):
     # download and parse the HTML content of the website using BeautifulSoup
     session = aiohttp.ClientSession()
-    response = await session.get(url)
-    soup = BeautifulSoup(await response.text(), 'html.parser')
+    response = session.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
 
     # find the main content area of the website using a heuristic algorithm
     main_content = soup.find('main') or soup.find('div', {'class': 'main'}) or soup.find('div', {'class': 'content'}) or soup.find('div', {'class': 'article'}) or soup
