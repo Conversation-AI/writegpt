@@ -1,10 +1,10 @@
 import asyncio
 import nest_asyncio
 from flask import Flask, request
-from requests_html import AsyncHTMLSession
 from bs4 import BeautifulSoup
 import openai
 import os
+import aiohttp
 
 # set up the Flask app
 app = Flask(__name__)
@@ -14,13 +14,14 @@ def hello_world():
     return 'Hello World!'
 
 # set up OpenAI
+os.environ['OPENAI_API_KEY'] = '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'
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # set up the session
-session = AsyncHTMLSession()
+session = aiohttp.ClientSession()
 
 @app.route('/generate_email', methods=['POST'])
-def generate_email(request):
+def generate_email():
     # get the request data
     request_data = request.get_json()
 
@@ -46,7 +47,7 @@ def generate_email(request):
     return output
 
 @app.route('/summarize_website', methods=['POST'])
-def summarize_website(request):
+def summarize_website():
     # get the request data
     data = request.json
 
@@ -65,24 +66,23 @@ def generate_instructions_v2(sender_info, recipient_info, prompt, word_count):
     return instructions
 
 async def scrape_website(url):
-    # load the website and render any JavaScript or dynamically generated content
-    response = await session.get(url)
-    await response.html.arender()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, timeout=60) as response:
+            # create a BeautifulSoup object with the HTML content of the website
+            soup = BeautifulSoup(await response.text(), 'html.parser')
 
-    # create a BeautifulSoup object with the HTML content of the website
-    soup = BeautifulSoup(response.html.html, 'html.parser')
+            # find all HTML elements that contain visible text
+            text_elements = soup.find_all(text=True)
 
-    # find all HTML elements that contain visible text
-    text_elements = soup.find_all(text=True)
+            # extract the visible text from the text elements
+            visible_text = ''
+            for element in text_elements:
+                if element.parent.name not in ['script', 'style', 'meta', '[document]']:
+                    visible_text += element.strip() + ' '
 
-    # extract the visible text from the text elements
-    visible_text = ''
-    for element in text_elements:
-        if element.parent.name not in ['script', 'style', 'meta', '[document]']:
-            visible_text += element.strip() + ' '
+            # return the visible text
+            return visible_text
 
-    # return the visible text
-    return visible_text
 
 def get_visible_text(url):
     # check if an event loop is already running
