@@ -52,7 +52,7 @@ def summarize_website():
 
     # get the visible text for the website
     visible_text = get_visible_text(data['url'])
-    visible_text = ' '.join(visible_text[:1000])
+    visible_text = ' '.join(visible_text[:2000])
 
     # generate the summary using OpenAI's GPT-3
     response = openai.Completion.create(model="text-davinci-003", prompt="Summarize the following website:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
