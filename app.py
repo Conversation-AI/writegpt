@@ -38,9 +38,12 @@ def generate_email():
 
     # generate the email using OpenAI's GPT-3
     response = openai.Completion.create(model="text-davinci-003", prompt=visible_text + "\n" + instructions, temperature=0.7, max_tokens=1000, top_p=1, frequency_penalty=0, presence_penalty=0)
-    output = response["choices"][0]["text"]
-
-    return output
+    response = response["choices"][0]["text"]
+    
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
 
 @app.route('/summarize_website', methods=['POST'])
 def summarize_website():
@@ -52,9 +55,11 @@ def summarize_website():
 
     # generate the summary using OpenAI's GPT-3
     response = openai.Completion.create(model="text-davinci-003", prompt="Correct this to standard English and then summarize what this company does in great details:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
-    output = response["choices"][0]["text"]
-
-    return output
+    response = response["choices"][0]["text"]
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
 
 # here's another version, simplified
 def generate_instructions_v2(sender_info, recipient_info, prompt, word_count):
