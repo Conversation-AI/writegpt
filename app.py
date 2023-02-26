@@ -14,6 +14,7 @@ def hello_world():
     return 'Hello World!'
 
 # set up OpenAI
+
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # set up the session
