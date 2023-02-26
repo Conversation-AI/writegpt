@@ -1,19 +1,21 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Buy | WriteGPT</title>
-        <style>
-            body {
-                background-color: #2e2f39;
-            }
-        </style>
-    </head>
-    <body>
-        <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
-        <stripe-pricing-table
-            pricing-table-id="prctbl_1MfbpeBfHy1q8kzTLe10xnLY"
-            publishable-key="pk_live_51MfbNhBfHy1q8kzTSmwgzfrjGTq0W8lEDbTLwJOPcY5sHUC091dtRYeQLzLadgsoh94qJyBkhCN4AmgiNYtqrqLD00Hfmu8W9F"
-        >
-        </stripe-pricing-table>
-    </body>
-</html>
+{% extends "base.html" %} {% block title %}Buy | WriteGPT{% endblock %} {% block
+content %}
+<div class="container mx-auto py-8 items-center">
+    <h1 class="text-3xl text-white text-center font-bold mb-4 mt-4">
+        Get API Access to WriteGPT
+    </h1>
+    <p class="text-white text-center mb-4">
+        Send personalized outbound messages at scale without compromising
+        conversion.
+    </p>
+    <p class="text-white text-center mb-4">
+        Your API key will be delivered to your email address after payment.
+    </p>
+    <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+    <stripe-pricing-table
+        pricing-table-id="prctbl_1MfbpeBfHy1q8kzTLe10xnLY"
+        publishable-key="pk_live_51MfbNhBfHy1q8kzTSmwgzfrjGTq0W8lEDbTLwJOPcY5sHUC091dtRYeQLzLadgsoh94qJyBkhCN4AmgiNYtqrqLD00Hfmu8W9F"
+    >
+    </stripe-pricing-table>
+</div>
+{% endblock %} {% block scripts %}{% endblock %}

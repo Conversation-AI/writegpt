@@ -33,6 +33,17 @@
             src="{{ url_for('static', filename='js/shared.js') }}"
         ></script>
 
+        <script type="text/javascript">
+            window.$crisp = [];
+            window.CRISP_WEBSITE_ID = "1d7438d8-6b1f-4e4c-b264-4595e16df771";
+            (function () {
+                d = document;
+                s = d.createElement("script");
+                s.src = "https://client.crisp.chat/l.js";
+                s.async = 1;
+                d.getElementsByTagName("head")[0].appendChild(s);
+            })();
+        </script>
         {% block scripts %}{% endblock %}
     </body>
 </html>
