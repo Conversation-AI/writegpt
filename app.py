@@ -97,3 +97,7 @@ def get_visible_text(url):
 @app.route('/buy')
 def buy():
     return render_template('buy.html')
+
+@app.route('/playground')
+def playground():
+    return render_template('playground.html')
