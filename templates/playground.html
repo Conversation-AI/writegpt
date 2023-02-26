@@ -9,17 +9,36 @@
         />
         <style>
             body {
-                background-color: #2e2f39;
+                background-color: #1d1e20;
             }
+            .bg-semi-transparent {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+
+            /* .bg-semi-transparent input, */
+            /* .bg-semi-transparent textarea {
+                background-color: rgba(255, 255, 255, 0.05);
+            } */
         </style>
     </head>
     <body>
-        <div class="container mx-auto py-8">
-            <h1 class="text-3xl text-white font-bold mb-4">
+        <div class="container mx-auto py-8 items-center">
+            <h1 class="text-3xl text-white text-center font-bold mb-4">
                 WriteGPT Playground
             </h1>
+            <p class="text-white text-center mb-4">
+                This is a Preview of what the personalized email API can do. For
+                programmatic access you can
+                <a
+                    class="text-blue bg-blue-500 hover:bg-blue-700 rounded px-2 py-1"
+                    href="/buy"
+                    >get API access</a
+                >.
+            </p>
             <div class="container mx-auto py-8 grid grid-cols-2 gap-8">
-                <form class="bg-gray-800 p-6 rounded-lg mb-8">
+                <form
+                    class="bg-gray-800 p-6 rounded-lg mb-8 bg-semi-transparent"
+                >
                     <h2 class="text-xl text-white font-semibold mb-4">Input</h2>
                     <div class="mb-4">
                         <label
@@ -32,6 +51,7 @@
                             id="website-url"
                             type="url"
                             name="website-url"
+                            placeholder="https://example.com"
                             required
                         />
                     </div>
@@ -46,6 +66,7 @@
                             id="sender-info"
                             type="text"
                             name="sender-info"
+                            placeholder="Jane, Founder at Awesome Inc"
                             required
                         />
                     </div>
@@ -60,20 +81,47 @@
                             id="recipient-info"
                             type="text"
                             name="recipient-info"
+                            placeholder="John, Founder at Example Co."
                             required
                         />
                     </div>
                     <div class="mb-4">
                         <label
                             class="block text-gray-400 font-medium mb-2"
-                            for="prompt"
-                            >Prompt</label
+                            for="word-count"
+                            >Word Count</label
                         >
+                        <input
+                            class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                            id="word-count"
+                            type="number"
+                            placeholder="400"
+                            name="word-count"
+                            required
+                        />
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="mb-4 flex justify-between items-center">
+                            <label
+                                class="block text-gray-400 font-medium mb-2"
+                                for="prompt"
+                                >Prompt</label
+                            >
+                            <button
+                                type="button"
+                                class="text-blue-500 hover:text-blue-700 focus:outline-none"
+                                onclick="fillPrompt()"
+                            >
+                                Use example
+                            </button>
+                        </div>
                         <textarea
                             class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
                             id="prompt"
                             name="prompt"
                             rows="5"
+                            placeholder="Ask for [a quick Zoom meeting], and talk about the value you could bring to their company. Add personalization about their company. Tone is [casual]."
                             required
                         ></textarea>
                     </div>
@@ -85,7 +133,9 @@
                         <span id="generate-email-btn-text">Generate Email</span>
                     </button>
                 </form>
-                <div class="bg-gray-800 p-6 rounded-lg flex flex-col">
+                <div
+                    class="bg-gray-800 p-6 rounded-lg flex flex-col bg-semi-transparent"
+                >
                     <h2 class="text-xl text-white font-semibold mb-4">
                         Output
                     </h2>
@@ -122,20 +172,21 @@
                 const recipientInfo =
                     document.querySelector("#recipient-info").value;
                 const prompt = document.querySelector("#prompt").value;
-
-                var generateBtn = document.getElementById("generate-email-btn");
-                var generateBtnText = document.getElementById(
+                const wordCount = document.querySelector("#word-count").value;
+                const generateBtn =
+                    document.getElementById("generate-email-btn");
+                const generateBtnText = document.getElementById(
                     "generate-email-btn-text"
                 );
                 generateBtn.disabled = true;
-                generateBtnText = "Generating...";
+                generateBtnText.textContent = "Generating...";
 
                 const requestBody = {
                     url,
                     sender_info: senderInfo,
                     recipient_info: recipientInfo,
                     prompt,
-                    word_count: 400,
+                    word_count: wordCount,
                 };
 
                 const response = await fetch("/generate_email", {
@@ -151,6 +202,7 @@
                 const outputElement = document.querySelector("#output");
                 showOutputText(responseBody);
                 generateBtn.disabled = false;
+                generateBtnText.textContent = "Generate Email";
 
                 function showOutputText(text) {
                     const outputElement = document.getElementById("output");
@@ -164,9 +216,14 @@
                         }
                         outputElement.value += words[i] + " ";
                         i++;
-                    }, 60);
+                    }, 100);
                 }
             });
+
+            function fillPrompt() {
+                var promptTextarea = document.getElementById("prompt");
+                promptTextarea.value = promptTextarea.placeholder;
+            }
         </script>
     </body>
 </html>

@@ -9,12 +9,7 @@ import aiohttp
 # set up the Flask app
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
 # set up OpenAI
-
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # set up the session
@@ -99,6 +94,11 @@ def get_visible_text(url):
 def buy():
     return render_template('buy.html')
 
+@app.route('/')
 @app.route('/playground')
 def playground():
     return render_template('playground.html')
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
