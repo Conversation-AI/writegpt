@@ -1,6 +1,6 @@
 import asyncio
 import nest_asyncio
-from flask import Flask, request
+from flask import Flask, request, render_template
 from bs4 import BeautifulSoup
 import openai
 import os
@@ -92,3 +92,8 @@ def get_visible_text(url):
     nest_asyncio.apply()
     visible_text = loop.run_until_complete(scrape_website(url))
     return visible_text[:5000]
+
+
+@app.route('/buy')
+def buy():
+    return render_template('buy.html')
