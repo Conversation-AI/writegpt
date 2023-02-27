@@ -23,12 +23,14 @@ jwt = JWTManager(app)
 from apis.auth import auth_bp
 from apis.user import user_bp
 from apis.billing import billing_bp
+from apis.key import key_bp
 from webhooks.stripe import stripe_bp
 
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(user_bp, url_prefix='/api/user')
 app.register_blueprint(billing_bp, url_prefix='/api/billing')
 app.register_blueprint(stripe_bp, url_prefix='/webhooks/stripe')
+app.register_blueprint(key_bp, url_prefix='/api/key')
 
 # set up OpenAI
 openai.api_key = os.environ.get("OPENAI_API_KEY")
