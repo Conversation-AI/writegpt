@@ -8,6 +8,7 @@ import aiohttp
 from datetime import datetime
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # set up the Flask app
 app = Flask(__name__)
@@ -17,6 +18,7 @@ load_dotenv()
 
 # Configure JWT settings
 app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY")
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=360) # 1 year
 jwt = JWTManager(app)
 
 # register the blueprints
@@ -35,8 +37,8 @@ app.register_blueprint(key_bp, url_prefix='/api/key')
 # set up OpenAI
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-# set up the session
-session = aiohttp.ClientSession()
+# # set up the session
+# session = aiohttp.ClientSession()
 
 @app.route('/generate_email', methods=['POST'])
 def generate_email():

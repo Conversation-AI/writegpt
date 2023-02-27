@@ -1,15 +1,7 @@
 from datetime import datetime
 import os
 
-from google.oauth2 import service_account
-from google.cloud import firestore
-
-# Load the service account key file into a credentials object
-path_to_credentials = os.path.join(os.path.dirname(__file__), '../config/writegpt-cai-0929acae63bb.json')
-credentials = service_account.Credentials.from_service_account_file(path_to_credentials)
-print("path_to_credentials: ", path_to_credentials)
-# Create a Firestore client using the credentials object
-db = firestore.Client(credentials=credentials)
+from db import db
 
 class User:
     def __init__(self, id=None, email=None, password=None, created_at=None, updated_at=None, 

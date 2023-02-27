@@ -56,7 +56,7 @@ def register():
 
 def create_jwt_token(user_id):
   # Create JWT token with user_id as payload
-  jwt_token = create_access_token(identity=user_id, expires_delta=None)
+  jwt_token = create_access_token(identity=user_id)
   return jwt_token
 
 @auth_bp.route('/login', methods=['POST'])
