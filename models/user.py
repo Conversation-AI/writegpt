@@ -4,7 +4,7 @@ from datetime import datetime
 import os
 
 # Load the service account key file into a credentials object
-path_to_credentials = os.path.join(os.path.dirname(__file__), '../config/conversation-ai-39130-01e699d05091.json')
+path_to_credentials = os.path.join(os.path.dirname(__file__), '../config/writegpt-cai-0929acae63bb.json')
 credentials = service_account.Credentials.from_service_account_file(path_to_credentials)
 
 # Create a Firestore client using the credentials object
