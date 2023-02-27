@@ -68,7 +68,9 @@ class User:
         doc_ref = db.collection('users').document(user_id)
         doc = doc_ref.get()
         if doc.exists:
-            return User.from_dict(doc.to_dict())
+            user = User.from_dict(doc.to_dict())
+            user.id = doc.id
+            return user
         else:
             return None
 
@@ -76,5 +78,7 @@ class User:
     def get_by_email(email):
         users_ref = db.collection('users').where('email', '==', email).limit(1).get()
         for doc in users_ref:
-            return User.from_dict(doc.to_dict())
+            user = User.from_dict(doc.to_dict())
+            user.id = doc.id
+            return user
         return None

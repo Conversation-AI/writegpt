@@ -4,7 +4,8 @@ from datetime import datetime
 import bcrypt
 # import user model
 from models.user import User
-
+# import uuid for generating user IDs
+import uuid
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 
@@ -50,7 +51,7 @@ def register():
 
 def create_jwt_token(user_id):
   # Create JWT token with user_id as payload
-  jwt_token = create_access_token(identity=str(user_id))
+  jwt_token = create_access_token(identity=user_id, expires_delta=None)
   return jwt_token
 
 @auth_bp.route('/login', methods=['POST'])
@@ -73,7 +74,7 @@ def login():
   return {'message': 'Login successful', 'token': jwt_token}, 200
 
 @auth_bp.route('/change_password', methods=['POST'])
-@jwt_required
+@jwt_required()
 def change_password():
   data = request.get_json()
   current_password = data.get('current_password')
