@@ -7,7 +7,7 @@ from db import db
 
 def generate_secret_key():
     """Generate a random secret key."""
-    return secrets.token_urlsafe(16)
+    return secrets.token_urlsafe(32)
 
 class ApiKey:
     def __init__(self, user_id, secret=None, created_at=None, last_used_at=None):

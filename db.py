@@ -1,10 +1,16 @@
+import json
 from google.oauth2 import service_account
 from google.cloud import firestore
 import os
 
-# Load the service account key file into a credentials object
-path_to_credentials = os.path.join(os.path.dirname(__file__), '../writegpt-cai-0929acae63bb.json')
-credentials = service_account.Credentials.from_service_account_file(path_to_credentials)
-print("path_to_credentials: ", path_to_credentials)
-# Create a Firestore client using the credentials object
-db = firestore.Client(credentials=credentials)
+# Load the credentials from the environment variable
+firestore_credentials = os.environ.get("FIRESTORE_CREDENTIALS_JSON")
+print(firestore_credentials)
+
+creds_dict = json.loads(firestore_credentials)
+
+# Create a credentials object from the dictionary
+creds = service_account.Credentials.from_service_account_info(creds_dict)
+
+# Initialize the Firestore client with the credentials
+db = firestore.Client(credentials=creds)

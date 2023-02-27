@@ -1,6 +1,3 @@
 .pyc
-# Ignore all .py files in the config directory
-/config/*.py
-# Include the conversation-ai-39130-01e699d05091.json file
-!/config/conversation-ai-39130-01e699d05091.json
+config/
 .env
