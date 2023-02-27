@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 
-from db import db
+from helpers.db import db
 
 class User:
     def __init__(self, id=None, email=None, password=None, created_at=None, updated_at=None, 

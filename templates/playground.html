@@ -161,7 +161,7 @@ content %}
             word_count: wordCount,
         };
 
-        const response = await fetch("/generate_email", {
+        const response = await fetch("/api/v1/generate_email", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

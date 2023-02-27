@@ -5,7 +5,6 @@ import os
 
 # Load the credentials from the environment variable
 firestore_credentials = os.environ.get("FIRESTORE_CREDENTIALS_JSON")
-print(firestore_credentials)
 
 creds_dict = json.loads(firestore_credentials)
 

@@ -3,7 +3,7 @@ import secrets
 import string
 import os
 
-from db import db
+from helpers.db import db
 
 def generate_secret_key():
     """Generate a random secret key."""
