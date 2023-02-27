@@ -5,9 +5,28 @@ from bs4 import BeautifulSoup
 import openai
 import os
 import aiohttp
+from datetime import datetime
+from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
 
 # set up the Flask app
 app = Flask(__name__)
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Configure JWT settings
+app.config['JWT_SECRET_KEY'] = os.environ.get("JWT_SECRET_KEY")
+jwt = JWTManager(app)
+
+# register the blueprints
+from apis.auth import auth_bp
+from apis.user import user_bp
+from apis.billing import billing_bp
+
+app.register_blueprint(auth_bp, url_prefix='/api/auth')
+app.register_blueprint(user_bp, url_prefix='/api/user')
+app.register_blueprint(billing_bp, url_prefix='/api/billing')
 
 # set up OpenAI
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -90,6 +109,7 @@ def get_visible_text(url):
     return visible_text[:5000]
 
 
+# website routes
 @app.route('/buy')
 def buy():
     return render_template('buy.html')

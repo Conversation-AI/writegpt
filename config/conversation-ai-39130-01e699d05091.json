@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "conversation-ai-39130",
+    "private_key_id": "01e699d05091e3a1ae990e099e4bc540ccccfce4",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCppTdl74oNDHxg\n51ojX8vjsW/k3Kc03JrSXLoJ3dltyCuIH8s6U0VlABLx2hdVABc00CQ9hnEp7CNQ\nLNO/pzoYj+7S1Jfm7jgMNWK056olCPnvOnJ0fVMzwRZtsTZghlTGkZLyW2B6Gao5\nEpEHQWXCsGKIC1mfo4irDc95SkPXamlwJq1m2nRldqDE2zyYks7QfFLBn4CHr3Pg\nJUb4E7Ni8fOJE4VpZDuiYR3TI+juFbAZU87ZiBzRmp1Yl7Xs9Uq56rbgxj1XavnX\nMHGges3BFFp+WwNFt1CbCcp9Hsr+EyjJxFgVE+qGzdt+4/IGutnlNZ6dCm1G0sk+\nn/kKzWHnAgMBAAECggEAUEP7kh9kEgh2UOMlotcQgQrTBlXgRwKZvi5hV4m/9lFf\nR2jDnzUHAGKolAW8RFtmn3Zbr0CNCmjPzH9pMKTOuBBhzx8HQBw2KJCZwz5ZImy8\n1JOy06r4UuRo2D2gnMryEYGPJVxWqW67O4WtWOF4ZEVQWU4FeaLGZyiBocGhl6na\nwbk7gDopZFLq6XpYY16F7ZhHZP6U8v9xgE54lZ0pwW6hOTWLjfkeuPBMqAm4IOHo\nN7Gmp7HtgTac6qfrWDaoksACiqXM/6N3GnLrRuucel+mW2p7rBIzjk0ajP+ogejK\nhW7IoxIerSyAZfrYgDo263FJRo8+6CeukQolW8NfAQKBgQDr3bRUZkFCBYHMDXBh\nbJWzE0gaVNFK/F/xpLx5+1VOj7XNXfDEHiKm7Iva4gkWlCJNR8RBn6h3/K2Hs5Cd\nFc+FTKqRNd/3HcKCRCv06S4SR/a+Bl39ItZANucfeQhFjwYhCsG2brFTz4MfqCi1\n3qTf9WNRT5B6A6cAHdgWLHv3swKBgQC4IGpx4+MXLP+Jc73L3iCyfdAu78taYrie\ngKCafkgKv3vMA9kBui1lzLGMtsxbHTx90ZyCtqHpoJUf8ASJpf3fPVyA/UIEZaRR\nBRCXtti5kwnKen3CDaEiFnVJUHyVzPWtzdw1L0dc3T40a8YUTfmEU1pz8RJXubzn\nCqYmMCUS/QKBgQCdskBEAY31/0qVzBJsALZh4S1e9YBtGylmnVaqU8DoYqsRoJI9\n/Uv7wMGM2X1sDCSW+LmdioqPlm/K/+JbNF7n56dOqO+R/+KxR7T/7Psxm827pPQo\nL6eBjXOflkNShlp5swBq4b1LpL0taDe3ySEA38bEcWbOPSzlpg54XMuRgwKBgBg3\nEyi1SslifpzqHtzv8qbmyvlRShIyB4u46OZIk1ruge571w9WF+BagkM6Szf0aV82\nsPmz4SljmBkiLMaZkQDKBh9kr0j6wRhyrRL21hvZzaDWaTGbL0TXZUdmEWx2Dx1z\nhHFuLVl2M1cbkWpcMuOHPs8etkXZRJGyIdXF4SpVAoGANtssK/0N4RS42b5HLPMa\n4fV+BMjWC/nGOUAj7iwZoH7I+uQfJRkttYiHTVdCrasC016npn3elxnZ+2xVAlWL\n6kdJUgb3rIlE5EsetZDkTCsXoYaydL4en3H6M89uyB4ImoTYS2qZ3BNEKHS3JqSW\neht3R2WCouLErfXUvQ1MXEc=\n-----END PRIVATE KEY-----\n",
+    "client_email": "writegpt-service-account@conversation-ai-39130.iam.gserviceaccount.com",
+    "client_id": "109155177827382088299",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/writegpt-service-account%40conversation-ai-39130.iam.gserviceaccount.com"
+}
