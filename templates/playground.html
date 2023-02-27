@@ -13,6 +13,7 @@ content %}
             >get API access</a
         >.
     </p>
+
     <div class="container mx-auto py-8 grid grid-cols-2 gap-8">
         <form class="bg-gray-800 p-6 rounded-lg mb-8 bg-semi-transparent">
             <h2 class="text-xl text-white font-semibold mb-4">Input</h2>
@@ -161,7 +162,7 @@ content %}
             word_count: wordCount,
         };
 
-        const response = await fetch("/api/v1/generate_email", {
+        const response = await fetch("/api/demo/generate_email", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -188,7 +189,7 @@ content %}
                 }
                 outputElement.value += words[i] + " ";
                 i++;
-            }, 100);
+            }, 120);
         }
     });
 

@@ -25,6 +25,7 @@ from apis.key import key_bp
 from webhooks.stripe import stripe_bp
 from apis.service import service_bp
 from views.views import views_bp
+from apis.demo_service import demo_service_bp
 
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(user_bp, url_prefix='/api/user')
@@ -33,6 +34,7 @@ app.register_blueprint(stripe_bp, url_prefix='/webhooks/stripe')
 app.register_blueprint(key_bp, url_prefix='/api/key')
 app.register_blueprint(service_bp, url_prefix='/api/v1')
 app.register_blueprint(views_bp)
+app.register_blueprint(demo_service_bp, url_prefix='/api/demo')
 
 
 @app.route('/generate_email', methods=['POST'])
@@ -40,4 +42,3 @@ app.register_blueprint(views_bp)
 def get_access():
     checkout_url = url_for('views.buy', _external=True)
     return f"Please visit {checkout_url} to get API access.", 410
-
