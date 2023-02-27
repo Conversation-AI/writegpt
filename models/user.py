@@ -1,7 +1,8 @@
-from google.oauth2 import service_account
-from google.cloud import firestore
 from datetime import datetime
 import os
+
+from google.oauth2 import service_account
+from google.cloud import firestore
 
 # Load the service account key file into a credentials object
 path_to_credentials = os.path.join(os.path.dirname(__file__), '../config/writegpt-cai-0929acae63bb.json')
@@ -10,16 +11,19 @@ credentials = service_account.Credentials.from_service_account_file(path_to_cred
 # Create a Firestore client using the credentials object
 db = firestore.Client(credentials=credentials)
 
-# Description for the User class
-# This class represents a user in the database and provides methods for interacting with the database and the user object. 
-
 class User:
-    def __init__(self, id=None, email=None, password=None, created_at=None, updated_at=None):
+    def __init__(self, id=None, email=None, password=None, created_at=None, updated_at=None, 
+             customer_id=None, name=None, billing_status=None, subscription_item_id=None, subscription_id=None):
         self.id = id
         self.email = email
         self.password = password
         self.created_at = created_at
         self.updated_at = updated_at
+        self.customer_id = customer_id
+        self.name = name
+        self.billing_status = billing_status
+        self.subscription_item_id = subscription_item_id
+        self.subscription_id = subscription_id
 
     # Example usage: 
     # user = User()
@@ -51,6 +55,11 @@ class User:
             'password': self.password,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
+            'customer_id': self.customer_id,
+            'name': self.name,
+            'billing_status': self.billing_status,
+            'subscription_item_id': self.subscription_item_id,
+            'subscription_id': self.subscription_id,
         }
 
     @staticmethod
@@ -61,8 +70,14 @@ class User:
         user.password = doc_dict.get('password')
         user.created_at = doc_dict.get('created_at')
         user.updated_at = doc_dict.get('updated_at')
+        user.customer_id = doc_dict.get('customer_id')
+        user.name = doc_dict.get('name')
+        user.billing_status = doc_dict.get('billing_status')
+        user.subscription_item_id = doc_dict.get('subscription_item_id')
+        user.subscription_id = doc_dict.get('subscription_id')
         return user
 
+    # get_by_id and get_by_email both need to set the user.id before returning user object.
     @staticmethod
     def get_by_id(user_id):
         doc_ref = db.collection('users').document(user_id)
@@ -77,6 +92,15 @@ class User:
     @staticmethod
     def get_by_email(email):
         users_ref = db.collection('users').where('email', '==', email).limit(1).get()
+        for doc in users_ref:
+            user = User.from_dict(doc.to_dict())
+            user.id = doc.id
+            return user
+        return None
+    
+    @staticmethod
+    def get_by_customer_id(customer_id):
+        users_ref = db.collection('users').where('customer_id', '==', customer_id).limit(1).get()
         for doc in users_ref:
             user = User.from_dict(doc.to_dict())
             user.id = doc.id

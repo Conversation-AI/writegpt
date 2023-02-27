@@ -68,6 +68,7 @@ requests-html==0.10.0
 rsa==4.9
 six==1.16.0
 soupsieve==2.4
+stripe==5.2.0
 tqdm==4.64.1
 types-pytz==2022.7.1.2
 urllib3==1.26.14

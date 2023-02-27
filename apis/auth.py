@@ -27,8 +27,13 @@ def register():
   # Check if user already exists with given email
   user = User.get_by_email(email)
   if user:
-      # User already exists, return error response
-      return {'message': 'User with this email already exists.'}, 409
+    # User already exists with this email
+    if user.password:
+        # User already has a password set, return error response
+        return {'message': 'User with this email already exists and has a password set.'}, 409
+    else:
+       # User exists and user.id is set, but user.password is not set
+       print('User exists but password is not set. Setting password.')
 
   # Hash the user's password
   salt = bcrypt.gensalt()
