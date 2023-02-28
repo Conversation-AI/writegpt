@@ -9,24 +9,15 @@
         />
         <style>
             body {
-                background-color: #1d1e20;
+                background-color: #f6f9fc;
             }
-            .bg-semi-transparent {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-            /* .bg-semi-transparent input, */
-            /* .bg-semi-transparent textarea {
-            background-color: rgba(255, 255, 255, 0.05);
-        } */
         </style>
+        <script src="/static/js/authenticatedRequest.js"></script>
     </head>
     <body>
-        <nav>
-            <!-- Shared navigation menu code -->
-        </nav>
+        {% include 'navbar.html' %}
 
-        <div class="content">{% block content %}{% endblock %}</div>
+        <div class="content pt-16">{% block content %}{% endblock %}</div>
 
         <script
             type="module"
@@ -44,6 +35,7 @@
                 d.getElementsByTagName("head")[0].appendChild(s);
             })();
         </script>
+
         {% block scripts %}{% endblock %}
     </body>
 </html>

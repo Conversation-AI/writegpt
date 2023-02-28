@@ -60,7 +60,7 @@ def summarize_website(user):
 
 # here's another version, simplified
 def generate_instructions_v2(sender_info, recipient_info, prompt, word_count):
-    instructions = f"You are {sender_info}. Write an email to {recipient_info}. {prompt}. Make it {word_count} words long."
+    instructions = f"You are {sender_info}. Write an email to {recipient_info}. {prompt}. Write it below {word_count} words."
     return instructions
 
 async def scrape_website(url):

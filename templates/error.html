@@ -1,0 +1,41 @@
+<div
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-6 rounded relative mt-4 mb-4"
+    id="error-message"
+    role="alert"
+    style="display: none"
+>
+    <strong class="font-bold">Error!</strong>
+    <span class="block sm:inline" id="error-message-text"></span>
+    <span
+        class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
+        onclick="hideError()"
+    >
+        <svg
+            class="fill-current h-6 w-6 text-red-500"
+            role="button"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+        >
+            <title>Close</title>
+            <path
+                d="M14.348 14.849a1 1 0 01-1.414 0L10 11.414l-2.93 2.93a1 1 0 01-1.415 0l-.708-.707a1 1 0 010-1.414L7.586 10l-2.93-2.93a1 1 0 010-1.415l.707-.707a1 1 0 011.414 0L10 8.586l2.93-2.93a1 1 0 011.415 0l.707.707a1 1 0 010 1.414L12.414 10l2.93 2.93a1 1 0 010 1.415l-.707.707z"
+                clip-rule="evenodd"
+                fill-rule="evenodd"
+            ></path>
+        </svg>
+    </span>
+</div>
+
+<script>
+    const errorMessage = document.getElementById("error-message");
+    const errorMessageText = document.getElementById("error-message-text");
+
+    function showError(message) {
+        errorMessageText.innerHTML = message;
+        errorMessage.style.display = "block";
+    }
+
+    function hideError() {
+        errorMessage.style.display = "none";
+    }
+</script>

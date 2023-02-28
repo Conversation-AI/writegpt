@@ -1,30 +1,27 @@
-{% extends "base.html" %} {% block title %}Homepage{% endblock %} {% block
-content %}
-<div class="container mx-auto py-8 items-center">
-    <h1 class="text-3xl text-white text-center font-bold mb-4">
-        WriteGPT Playground
-    </h1>
-    <p class="text-white text-center mb-4">
-        This is a Preview of what the personalized email API can do. For
+{% extends "base.html" %} {% block title %}Playground | WriteGPT{% endblock %}
+{% block content %}
+<div class="container mx-auto py-12 flex flex-col items-center">
+    <h1 class="text-3xl text-gray-800 font-bold mb-4">WriteGPT Playground</h1>
+    <p class="text-gray-600 text-center mb-8">
+        This is a preview of what the personalized email API can do. For
         programmatic access you can
-        <a
-            class="text-blue bg-blue-500 hover:bg-blue-700 rounded px-2 py-1"
-            href="/buy"
+        <a class="text-blue-500 hover:text-blue-700 font-semibold" href="/buy"
             >get API access</a
         >.
     </p>
+    {% include 'error.html' %}
 
-    <div class="container mx-auto py-8 grid grid-cols-2 gap-8">
-        <form class="bg-gray-800 p-6 rounded-lg mb-8 bg-semi-transparent">
-            <h2 class="text-xl text-white font-semibold mb-4">Input</h2>
-            <div class="mb-4">
+    <div class="container mx-auto grid grid-cols-2 gap-8">
+        <form class="bg-white rounded-lg shadow-lg p-8 mb-4">
+            <h2 class="text-xl text-gray-800 font-semibold mb-4">Input</h2>
+            <div class="mb-6">
                 <label
-                    class="block text-gray-400 font-medium mb-2"
+                    class="block text-gray-600 font-medium mb-2"
                     for="website-url"
                     >Website URL</label
                 >
                 <input
-                    class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                    class="w-full px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:bg-gray-100"
                     id="website-url"
                     type="url"
                     name="website-url"
@@ -34,12 +31,12 @@ content %}
             </div>
             <div class="mb-4">
                 <label
-                    class="block text-gray-400 font-medium mb-2"
+                    class="block text-gray-700 font-medium mb-2"
                     for="sender-info"
                     >Sender Info</label
                 >
                 <input
-                    class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                    class="w-full px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
                     id="sender-info"
                     type="text"
                     name="sender-info"
@@ -49,12 +46,12 @@ content %}
             </div>
             <div class="mb-4">
                 <label
-                    class="block text-gray-400 font-medium mb-2"
+                    class="block text-gray-700 font-medium mb-2"
                     for="recipient-info"
                     >Recipient Info</label
                 >
                 <input
-                    class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                    class="w-full px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
                     id="recipient-info"
                     type="text"
                     name="recipient-info"
@@ -64,12 +61,12 @@ content %}
             </div>
             <div class="mb-4">
                 <label
-                    class="block text-gray-400 font-medium mb-2"
+                    class="block text-gray-700 font-medium mb-2"
                     for="word-count"
                     >Word Count</label
                 >
                 <input
-                    class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                    class="w-full px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
                     id="word-count"
                     type="number"
                     placeholder="400"
@@ -77,11 +74,10 @@ content %}
                     required
                 />
             </div>
-
             <div class="mb-4">
                 <div class="mb-4 flex justify-between items-center">
                     <label
-                        class="block text-gray-400 font-medium mb-2"
+                        class="block text-gray-700 font-medium mb-2"
                         for="prompt"
                         >Prompt</label
                     >
@@ -94,34 +90,33 @@ content %}
                     </button>
                 </div>
                 <textarea
-                    class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                    class="w-full px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:border-blue-500"
                     id="prompt"
                     name="prompt"
                     rows="5"
-                    placeholder="Ask for [a quick Zoom meeting], and talk about the value you could bring to their company. Add personalization about their company. Tone is [casual]."
+                    placeholder="Ask for [a quick Zoom meeting], and talk about the value you could bring to their company. Add personalization about their company. Tone is [casual]. Add a specific compliment after the signature as P.S."
                     required
                 ></textarea>
             </div>
+
             <button
                 id="generate-email-btn"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                 type="submit"
             >
                 <span id="generate-email-btn-text">Generate Email</span>
             </button>
         </form>
-        <div
-            class="bg-gray-800 p-6 rounded-lg flex flex-col bg-semi-transparent"
-        >
-            <h2 class="text-xl text-white font-semibold mb-4">Output</h2>
-            <div class="relative flex-grow mb-4">
+        <div class="bg-white rounded-lg shadow-lg p-8 flex flex-col">
+            <h2 class="text-xl text-gray-800 font-semibold mb-4">Output</h2>
+            <div class="relative flex-grow mb-6">
                 <textarea
-                    class="w-full h-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                    class="w-full h-full px-4 py-2 text-gray-700 bg-gray-200 rounded-lg focus:outline-none focus:bg-gray-100"
                     id="output"
                     readonly
                 ></textarea>
                 <button
-                    class="absolute top-0 right-0 mt-2 mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    class="absolute top-0 right-0 mt-2 mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                     type="button"
                     onclick="copyToClipboard()"
                 >
@@ -132,70 +127,6 @@ content %}
     </div>
 </div>
 {% endblock %} {% block scripts %}
-<script>
-    function copyToClipboard() {
-        var outputElement = document.getElementById("output");
-        outputElement.select();
-        document.execCommand("copy");
-    }
-
-    const form = document.querySelector("form");
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        const url = document.querySelector("#website-url").value;
-        const senderInfo = document.querySelector("#sender-info").value;
-        const recipientInfo = document.querySelector("#recipient-info").value;
-        const prompt = document.querySelector("#prompt").value;
-        const wordCount = document.querySelector("#word-count").value;
-        const generateBtn = document.getElementById("generate-email-btn");
-        const generateBtnText = document.getElementById(
-            "generate-email-btn-text"
-        );
-        generateBtn.disabled = true;
-        generateBtnText.textContent = "Generating...";
-
-        const requestBody = {
-            url,
-            sender_info: senderInfo,
-            recipient_info: recipientInfo,
-            prompt,
-            word_count: wordCount,
-        };
-
-        const response = await fetch("/api/demo/generate_email", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestBody),
-        });
-
-        const responseBody = await response.text();
-        console.log(responseBody);
-        const outputElement = document.querySelector("#output");
-        showOutputText(responseBody);
-        generateBtn.disabled = false;
-        generateBtnText.textContent = "Generate Email";
-
-        function showOutputText(text) {
-            const outputElement = document.getElementById("output");
-            outputElement.value = "";
-            const words = text.split(" ");
-            let i = 0;
-            const intervalId = setInterval(() => {
-                if (i >= words.length) {
-                    clearInterval(intervalId);
-                    return;
-                }
-                outputElement.value += words[i] + " ";
-                i++;
-            }, 120);
-        }
-    });
-
-    function fillPrompt() {
-        var promptTextarea = document.getElementById("prompt");
-        promptTextarea.value = promptTextarea.placeholder;
-    }
-</script>
+<script src="/static/js/playground.js"></script>
+<script src="/static/js/protected.js"></script>
 {% endblock %}

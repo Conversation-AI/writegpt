@@ -1,66 +1,61 @@
-{% extends "base.html" %} {% block title %}Sign up | WriteGPT{% endblock %} {%
+{% extends "base.html" %} {% block title %}Log in | WriteGPT{% endblock %} {%
 block content %}
 <div class="flex h-screen bg-gray-100">
     <div class="m-auto lg:w-1/3 md:w-1/2 sm:w-2/3">
         <div class="bg-white rounded-lg px-10 py-8">
-            <h1 class="text-3xl text-gray-800 font-bold mb-4">
-                Create Account
-            </h1>
+            <h1 class="text-3xl text-gray-800 font-bold mb-4">Log in</h1>
             {% include 'error.html' %}
             <form class="mb-4">
                 <div class="mb-4">
                     <label
-                        class="block text-gray-400 font-medium mb-2"
+                        class="block text-gray-700 font-medium mb-2"
                         for="email"
                         >Email</label
                     >
                     <input
-                        class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                        class="w-full px-3 py-2 text-gray-700 bg-gray-100 rounded-lg border border-gray-400 focus:outline-none focus:border-blue-500"
                         id="email"
                         type="email"
                         name="email"
                         placeholder="johndoe@example.com"
                         required
                     />
-                    <span id="email-error" class="text-red-500 text-sm"></span>
                 </div>
-                <div class="mb-4">
+                <div class="mb-6">
                     <label
-                        class="block text-gray-400 font-medium mb-2"
+                        class="block text-gray-700 font-medium mb-2"
                         for="password"
                         >Password</label
                     >
                     <input
-                        class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded"
+                        class="w-full px-3 py-2 text-gray-700 bg-gray-100 rounded-lg border border-gray-400 focus:outline-none focus:border-blue-500"
                         id="password"
                         type="password"
                         name="password"
                         placeholder="********"
                         required
                     />
-                    <span
-                        id="password-error"
-                        class="text-red-500 text-sm"
-                    ></span>
                 </div>
-
                 <button
-                    id="create-account-btn"
+                    id="login-btn"
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
                     type="submit"
                 >
-                    <span id="create-account-btn-text">Create Account</span>
+                    Log in
                 </button>
             </form>
             <div class="text-center">
-                <span>Already have an account? </span>
-                <a class="text-blue-500 hover:text-blue-700" href="/login"
-                    >Log in</a
+                <a class="text-blue-500 hover:text-blue-700" href="#"
+                    >Forgot password?</a
+                >
+                <span class="text-gray-400 mx-2">|</span>
+                <a class="text-blue-500 hover:text-blue-700" href="/signup"
+                    >Create account</a
                 >
             </div>
         </div>
     </div>
 </div>
 {% endblock %} {% block scripts %}
-<script src="{{ url_for('static', filename='js/signup.js')}}"></script>
+<script src="/static/js/login.js"></script>
 {% endblock %}
