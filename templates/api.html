@@ -1,0 +1,50 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container mx-auto pt-8">
+    <div class="max-w-lg mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold mb-4">API Keys</h2>
+            <div class="mb-4">
+                <button
+                    id="create-api-key-btn"
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                >
+                    Create API Key
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 text-left align-middle">
+                                Secret Key
+                            </th>
+                            <th class="px-4 py-2 text-left align-middle">
+                                Created
+                            </th>
+                            <th class="px-4 py-2 text-left align-middle">
+                                Last Used
+                            </th>
+                            <th class="px-4 py-2 text-left align-middle">
+                                Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="keys-container"></tbody>
+                </table>
+            </div>
+            <div class="mt-4 text-right">
+                <a
+                    href="https://documenter.getpostman.com/view/26009178/2s93CPqs9R"
+                    target="_blank"
+                    class="text-blue-500 hover:text-blue-700"
+                >
+                    API Documentation
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/protected.js"></script>
+{% endblock %}

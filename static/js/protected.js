@@ -6,8 +6,8 @@ function getJwtToken() {
 window.onload = function () {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
-        // Redirect the user to the login page if there is no JWT token
-        window.location.href = "/login";
+        // Redirect the user to the signup page if there is no JWT token
+        window.location.href = "/signup";
         return;
     }
     // // Send a request to the protected endpoint to check if the token is valid

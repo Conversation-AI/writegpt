@@ -25,17 +25,17 @@ form.addEventListener("submit", async (event) => {
         word_count: wordCount,
     };
 
-    // get API secret from local storage, if undefined then call getAPIKey to get it
-    let apiSecret = localStorage.getItem("api_secret");
-    if (apiSecret === null) {
-        apiSecret = await getAPIKey();
-    }
+    // // get API secret from local storage, if undefined then call getAPIKey to get it
+    // let apiSecret = localStorage.getItem("api_secret");
+    // if (apiSecret === null) {
+    //     apiSecret = await getAPIKey();
+    // }
 
-    const response = await fetch("/api/v1/generate_email", {
+    const response = await fetch("/api/demo/generate_email", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${apiSecret}`,
+            // Authorization: `Bearer ${apiSecret}`,
         },
         body: JSON.stringify(requestBody),
     });
@@ -65,7 +65,23 @@ form.addEventListener("submit", async (event) => {
             }
             outputElement.value += words[i] + " ";
             i++;
-        }, 60);
+        }, 80);
+
+        // access user billing status stored in local storage
+        const userDict = JSON.parse(localStorage.getItem("user"));
+
+        // only redirect if user billing status is not active and not trialing
+        if (
+            userDict["billing_status"] !== "active" &&
+            userDict["billing_status"] !== "trialing"
+        ) {
+            // redirect to pricing page after the animation is done
+            // calculate how long it will take to print all words
+            const timeToPrint = words.length * 80;
+            setTimeout(() => {
+                window.location.href = "/pricing";
+            }, timeToPrint + 3000);
+        }
     }
 });
 

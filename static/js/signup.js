@@ -49,7 +49,7 @@ form.addEventListener("submit", (event) => {
                         generateAPIKey();
 
                         // Redirect to the home page
-                        window.location.href = "/home";
+                        window.location.href = "/playground";
                     });
                 } else {
                     // Handle error

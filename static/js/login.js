@@ -34,7 +34,7 @@ form.addEventListener("submit", (event) => {
                     localStorage.setItem("jwtToken", token);
 
                     // Redirect to the home page
-                    window.location.href = "/home";
+                    window.location.href = "/playground";
                 });
             } else {
                 // Handle error

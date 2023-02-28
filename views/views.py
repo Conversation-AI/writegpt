@@ -4,9 +4,12 @@ views_bp = Blueprint('views', __name__)
 
 # website routes
 @views_bp.route('/buy')
-@views_bp.route('/pricing')
 def buy():
     return render_template('buy.html')
+
+@views_bp.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
 
 @views_bp.route('/')
 @views_bp.route('/playground')
@@ -24,3 +27,7 @@ def login():
 @views_bp.route('/home')
 def home():
     return render_template('home.html')
+
+@views_bp.route('/api')
+def api():
+    return render_template('api.html')

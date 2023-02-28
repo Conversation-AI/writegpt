@@ -19,3 +19,18 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+const userDict = await sendAuthenticatedRequest("GET", "/api/user")
+    .then((response) => {
+        if (response.ok) {
+            // get the response data
+            return response.json();
+        } else {
+            console.log("Error getting user");
+        }
+    })
+    .then((data) => {
+        console.log("User found successfully: ", data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        return data.user;
+    });
