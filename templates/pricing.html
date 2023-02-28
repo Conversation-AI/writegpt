@@ -31,7 +31,7 @@
         </div>
     </div>
 </div>
-
+<script src="/static/js/billing.js"></script>
 <script>
     // Start conversation in Crisp when user clicks on Get started button
     document
@@ -39,6 +39,19 @@
         .addEventListener("click", function () {
             $crisp.push(["do", "chat:open"]);
         });
+
+    // after page loaded
+    window.addEventListener("load", function () {
+        const getStartedButton = document.getElementById("get-started");
+
+        const is_paid = checkBillingStatus();
+
+        if (is_paid) {
+            getStartedButton.innerHTML = "Customer portal";
+            getStartedButton.href =
+                "https://billing.stripe.com/p/login/fZe2aL4Ll2Nf0Ja5kk";
+        }
+    });
 </script>
 
 {% endblock %}

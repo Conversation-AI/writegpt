@@ -24,6 +24,10 @@ def signup():
 def login():
     return render_template('login.html')
 
+@views_bp.route('/reset')
+def reset():
+    return render_template('reset.html')
+
 @views_bp.route('/home')
 def home():
     return render_template('home.html')

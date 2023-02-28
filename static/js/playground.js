@@ -16,6 +16,7 @@ form.addEventListener("submit", async (event) => {
     const generateBtnText = document.getElementById("generate-email-btn-text");
     generateBtn.disabled = true;
     generateBtnText.textContent = "Generating...";
+    hideMessageBox();
 
     const requestBody = {
         url,
@@ -31,12 +32,29 @@ form.addEventListener("submit", async (event) => {
     //     apiSecret = await getAPIKey();
     // }
 
-    const response = await fetch("/api/demo/generate_email", {
-        method: "POST",
-        headers: {
+    // check billing status, configure endpointURL and headers object accordingly
+    let endpointURL = "/api/demo/generate_email";
+    let headersObj = {
+        "Content-Type": "application/json",
+    };
+
+    isPaid = checkBillingStatus();
+    if (isPaid) {
+        endpointURL = "/api/v1/generate_email";
+        // get apiSecret from local storage and add it to headers object
+        let apiSecret = localStorage.getItem("api_secret");
+        if (apiSecret === null) {
+            apiSecret = await getAPIKey();
+        }
+        headersObj = {
             "Content-Type": "application/json",
-            // Authorization: `Bearer ${apiSecret}`,
-        },
+            Authorization: `Bearer ${apiSecret}`,
+        };
+    }
+
+    const response = await fetch(endpointURL, {
+        method: "POST",
+        headers: headersObj,
         body: JSON.stringify(requestBody),
     });
 
@@ -56,12 +74,22 @@ form.addEventListener("submit", async (event) => {
     } else {
         // outputElement.textContent = "Error: " + responseBody;
         console.log("Error: " + responseBody);
-        showError(responseBody);
+        // get pricing page url
+        const pricingPageURL = window.location.origin + "/pricing";
+        // format error string to include the pricingURL
+        const errorString = `You do not have enough credits to generate an email. Visit <a href='${pricingPageURL}'>${pricingPageURL}</a> to upgrade your plan.`;
+        showError(errorString);
     }
     generateBtn.disabled = false;
     generateBtnText.textContent = "Generate Email";
 
     function showOutputText(text) {
+        var timeInterval = 120;
+        // checks billing status is paid or not
+        if (checkBillingStatus()) {
+            timeInterval = 60;
+        }
+
         const outputElement = document.getElementById("output");
         outputElement.value = "";
         const words = text.split(" ");
@@ -73,19 +101,13 @@ form.addEventListener("submit", async (event) => {
             }
             outputElement.value += words[i] + " ";
             i++;
-        }, 80);
+        }, timeInterval);
 
-        // access user billing status stored in local storage
-        const userDict = JSON.parse(localStorage.getItem("user"));
-
-        // only redirect if user billing status is not active and not trialing
-        if (
-            userDict["billing_status"] !== "active" &&
-            userDict["billing_status"] !== "trialing"
-        ) {
+        if (!isPaid) {
+            // if not paid, then schedule redirect to pricing page 3 seconds after animation finishes
             // redirect to pricing page after the animation is done
             // calculate how long it will take to print all words
-            const timeToPrint = words.length * 80;
+            const timeToPrint = words.length * timeInterval;
             setTimeout(() => {
                 window.location.href = "/pricing";
             }, timeToPrint + 3000);

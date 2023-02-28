@@ -54,7 +54,7 @@ form.addEventListener("submit", (event) => {
                 } else {
                     // Handle error
                     console.log("Error signing up user");
-                    showError("Invalid username or password");
+                    showError("User with the provided email already exists");
                 }
             })
             .catch((error) => {
