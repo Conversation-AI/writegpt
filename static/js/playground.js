@@ -44,6 +44,14 @@ form.addEventListener("submit", async (event) => {
     console.log(responseBody);
     const outputElement = document.querySelector("#output");
     if (response.ok) {
+        mixpanel.track("Generated Email", {
+            url,
+            sender_info: senderInfo,
+            recipient_info: recipientInfo,
+            prompt,
+            word_count: wordCount,
+            responseBody: responseBody,
+        });
         showOutputText(responseBody);
     } else {
         // outputElement.textContent = "Error: " + responseBody;
