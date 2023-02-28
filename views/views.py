@@ -11,7 +11,7 @@ def buy():
 def pricing():
     return render_template('pricing.html')
 
-@views_bp.route('/')
+
 @views_bp.route('/playground')
 def playground():
     return render_template('playground.html')
@@ -28,6 +28,7 @@ def login():
 def reset():
     return render_template('reset.html')
 
+@views_bp.route('/')
 @views_bp.route('/home')
 def home():
     return render_template('home.html')
