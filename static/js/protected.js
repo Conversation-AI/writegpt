@@ -7,6 +7,7 @@ window.onload = function () {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         // Redirect the user to the signup page if there is no JWT token
+        // if not currrent at signup or login page
         window.location.href = "/signup";
         return;
     }

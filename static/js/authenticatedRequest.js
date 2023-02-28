@@ -7,7 +7,8 @@ function sendAuthenticatedRequest(method, url, data) {
     const jwtToken = getJwtToken();
     if (!jwtToken) {
         // Redirect the user to the login page if there is no JWT token
-        window.location.href = "/login";
+        console.log("No JWT token found");
+        window.location.href = "/signup";
         return;
     }
     // Set the Authorization header to the JWT token
