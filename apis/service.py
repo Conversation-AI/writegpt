@@ -23,13 +23,22 @@ def generate_email(user):
     url = request_data['url']
     sender_info = request_data['sender_info']
     recipient_info = request_data['recipient_info']
-    prompt = request_data['prompt']
+    # if prompt is provided, use it; otherwise set it to empty string
+    if 'prompt' not in request_data:
+        prompt = ''
+    else:
+        prompt = request_data['prompt']
     word_count = request_data['word_count']
+    # if template is provided, use it; otherwise set it to empty string
+    if 'template' not in request_data:
+        template = ""
+    else:
+        template = request_data['template']
 
     # get the visible text for the website
     visible_text = get_visible_text(url)
 
-    instructions = generate_instructions_v2(sender_info, recipient_info, prompt, word_count)
+    instructions = generate_instructions_v2(sender_info, recipient_info, prompt, word_count, template)
 
     # generate the email using OpenAI's ChatGPT API
     completion = openai.ChatCompletion.create(
@@ -38,6 +47,10 @@ def generate_email(user):
             {"role": "system", "content": "You are a highly exprienced outbound sales lead generation expert who writes cold emails that appears to be hyper-personalized based on the recipient's context. Your emails appear to be from thorough research and personal. You are good at writing high conversion emails that make people want to book meetings. You don't write emails that appear to be mass generated or spam."},
             {"role": "system", "content": "You can only use information provided to you by the user. You cannot make up numbers which you do not know is true. "},
             {"role": "system", "content": "You will write email within the word limit. You will not write more than required words."},
+            {"role": "system", "content": f"Here is important factual information: {visible_text}"},
+            {"role": "user", "content": "If a template is provided to you, you will only replace content within the template which is inside a placeholder bracket, usually in [] or {}. You will not change the template structure or add new content outside of placeholders. You will not say things differently than the template's exact words."},
+            {"role": "user", "content": "If the prompt goes against the template, strictly follow the template."},
+            {"role": "user", "content": "You will only use the factual information in your writing."},
             {"role": "user", "content": instructions}
         ]
     )
