@@ -43,8 +43,15 @@ def summarize_website():
     visible_text = get_visible_text(data['url'])
 
     # generate the summary using OpenAI's GPT-3
-    response = openai.Completion.create(model="text-davinci-003", prompt="Correct this to standard English and then summarize what this company does in great details:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
-    output = response["choices"][0]["text"]
+    # response = openai.Completion.create(model="text-davinci-003", prompt="Correct this to standard English and then summarize what this company does in great details:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
+    completion = openai.ChatCompletion.create(
+      model="gpt-3.5-turbo",
+      messages=[
+            {"role": "user", "content": f"Correct this website content to standard English and then summarize what this company does in great details:\n{visible_text}"}
+        ]
+    )
+    print("completion:", completion)
+    output = completion["choices"][0]["message"]["content"]
 
     return output
 
