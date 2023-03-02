@@ -61,8 +61,8 @@ def summarize_website(user):
     )
     output = completion["choices"][0]["message"]["content"]
 
-    # update the usage record for the user
-    update_usage_record_by_user(user)
+    # # update the usage record for the user
+    # update_usage_record_by_user(user)
 
     return output
 
