@@ -28,9 +28,20 @@ def generate_email():
 
     instructions = generate_instructions_v2(sender_info, recipient_info, prompt, word_count)
 
-    # generate the email using OpenAI's GPT-3
-    response = openai.Completion.create(model="text-davinci-003", prompt=visible_text + "\n" + instructions, temperature=0.7, max_tokens=1000, top_p=1, frequency_penalty=0, presence_penalty=0)
-    output = response["choices"][0]["text"]
+    # # generate the email using OpenAI's GPT-3
+    # response = openai.Completion.create(model="text-davinci-003", prompt=visible_text + "\n" + instructions, temperature=0.7, max_tokens=1000, top_p=1, frequency_penalty=0, presence_penalty=0)
+    # output = response["choices"][0]["text"]
+
+    # generate the email using OpenAI's ChatGPT API
+    completion = openai.ChatCompletion.create(
+      model="gpt-3.5-turbo",
+      messages=[
+            {"role": "system", "content": "You are a highly exprienced outbound sales lead generation expert who writes cold emails that appears to be hyper-personalized based on the recipient's context. Your emails appear to be from thorough research and personal. You are good at writing high conversion emails that make people want to book meetings. You don't write emails that appear to be mass generated or spam."},
+            {"role": "user", "content": instructions}
+        ]
+    )
+    print("completion:", completion)
+    output = completion["choices"][0]["message"]["content"]
 
     return output
 
@@ -47,7 +58,7 @@ def summarize_website():
     completion = openai.ChatCompletion.create(
       model="gpt-3.5-turbo",
       messages=[
-            {"role": "user", "content": f"Correct this website content to standard English and then summarize what this company does in great details:\n{visible_text}"}
+            {"role": "user", "content": f"Correct this website content to standard English and then summarize what this company does, the market it's in, it's main target customers, and value propositions, in great details (under 500 words):\n{visible_text}"}
         ]
     )
     print("completion:", completion)
