@@ -14,7 +14,18 @@ stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 # Handle Stripe webhook events
 @stripe_bp.route('/', methods=['POST'])
 def handle_stripe_webhook():
-    event = json.loads(request.data)
+    payload = request.data
+    event = None
+
+    try:
+        event = stripe.Event.construct_from(
+            json.loads(payload), stripe.api_key
+        )
+    except ValueError as e:
+        # Invalid payload
+        return "Invalid payload", 400
+    
+    # Handle the event
     event_type = event['type']
     if event_type == 'customer.created':
         handle_customer_created(event)
