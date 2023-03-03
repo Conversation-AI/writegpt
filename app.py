@@ -42,3 +42,9 @@ app.register_blueprint(demo_service_bp, url_prefix='/api/demo')
 def get_access():
     checkout_url = url_for('views.buy', _external=True)
     return f"Please visit {checkout_url} to get API access.", 410
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 8080))
+    # start the app
+    app.run(host='0.0.0.0', port=port, debug=True)
