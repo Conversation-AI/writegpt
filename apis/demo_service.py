@@ -131,7 +131,7 @@ def google():
     data = request.json
     query = data['query']
     # get the search results
-    search_results = google_search(query, mode="person")
+    search_results = google_search(query)
 
     return search_results
     
@@ -168,7 +168,7 @@ def generate_instructions_v2(sender_info, recipient_info, prompt, word_count, te
     prompt_instructions="\n"
     if prompt: 
         prompt_instructions = f"Prompt: {prompt}.\n\n"
-    instructions = f"You are {sender_info}. Write an email to {recipient_info}. {prompt_instructions}. Make it {word_count} words long. {template_instructions}"
+    instructions = f"You are {sender_info}. Write an email to {recipient_info}. Follow the template, and when appropriate inside placeholders only: {prompt_instructions}. Make it under {word_count} words long. {template_instructions}"
     return instructions
 
 async def scrape_website(url):
