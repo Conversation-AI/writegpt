@@ -82,9 +82,10 @@ def generate_email():
             {"role": "system", "content": f"Here is knowledge base information you can use as facts: {knowledge}"},
             {"role": "system", "content": f"Recent news you can use as factual information: {summarized_search_results}\n"},
             {"role": "user", "content": "If a template is provided to you, you will only replace content within the template which is inside a placeholder bracket, usually in [] or {}. You will not change the template structure or add new content outside of placeholders. You will not say things differently than the template's exact words."},
-            {"role": "user", "content": "If the prompt goes against the template, strictly follow the template."},
-            {"role": "user", "content": "You will only use the factual information in your writing."},
+            {"role": "user", "content": "If the prompt goes against the template, strictly follow the template. Always follow the template strictly word for word if given. You are not allowed to change the template outside the placeholders."},
+            {"role": "user", "content": "You will only use the factual information in your writing. This is very important."},
             {"role": "user", "content": "You cannot output things other than the email content. Do not output word count. End with the email."},
+            {"role": "user", "content": "When working with a template, replace anything within each placeholder within more specific info based on context. Do not output the Subject unless instructed specifically to do so by me or the template."},
             {"role": "user", "content": instructions}
         ]
     )
@@ -144,6 +145,7 @@ def summarize_google_search_results(query, search_results):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": f"Summarize a list of things you learned about {query} in specific details, and when each event happened from this list. Sorted most recent on top."},
+            {"role": "user", "content": f"Job postings are not news we care about. Ignore job postings."},
             # {"role": "user", "content": f"Output a summary of everything you learned about them from this list, only including most recent information that's newsworthy and positive."},
             {"role": "user", "content": f"There are often many things with the same name. Pick only the most relevant one and ignore information potentially about unrelated entities or persons than what we want to learn about. Only list newsworthy and positive things."},
             {"role": "user", "content": f"Here is the list: {search_results_string}"},
@@ -168,7 +170,7 @@ def generate_instructions_v2(sender_info, recipient_info, prompt, word_count, te
     prompt_instructions="\n"
     if prompt: 
         prompt_instructions = f"Prompt: {prompt}.\n\n"
-    instructions = f"You are {sender_info}. Write an email to {recipient_info}. Follow the template, and when appropriate inside placeholders only: {prompt_instructions}. Make it under {word_count} words long. {template_instructions}"
+    instructions = f"You are {sender_info}. Write an email to {recipient_info}. Precisely follow the template, and when appropriate inside placeholders only, try to satisfy the prompt. {prompt_instructions}. Make it under {word_count} words long. {template_instructions}"
     return instructions
 
 async def scrape_website(url):
