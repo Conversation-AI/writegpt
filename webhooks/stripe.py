@@ -91,8 +91,6 @@ def handle_customer_subscription_created(event):
     subscription_status = event['data']['object']['status']
 
     customer_id = event['data']['object']['customer']
-    customer_email = event['data']['object']['customer_email']
-    customer_name = event['data']['object']['customer_name']
 
     # Add your business logic to handle subscription created event here
     # For example, you may want to create a new subscription record in your database
@@ -115,8 +113,6 @@ def handle_customer_subscription_updated(event):
     subscription_status = event['data']['object']['status']
 
     customer_id = event['data']['object']['customer']
-    customer_email = event['data']['object']['customer_email']
-    customer_name = event['data']['object']['customer_name']
 
     # Add your business logic to handle subscription updated event here
     # For example, you may want to adjust the usage records or billing for the customer
@@ -134,9 +130,7 @@ def handle_customer_subscription_updated(event):
 
 # Handle customer.subscription.deleted webhook event
 def handle_customer_subscription_deleted(event):
-    subscription_id = event['data']['object']['id']
     customer_id = event['data']['object']['customer']
-    subscription_item_id = event['data']['object']['items']['data'][0]['id']
     subscription_status = event['data']['object']['status']
 
     # Add your business logic to handle subscription deleted event here
