@@ -87,6 +87,7 @@ def generate_email():
             {"role": "user", "content": "You will only use the factual information in your writing. This is very important."},
             {"role": "user", "content": "You cannot output things other than the email content. Do not output word count. End with the email."},
             {"role": "user", "content": "When working with a template, replace anything within each placeholder within more specific info based on context. Do not output the Subject unless instructed specifically to do so by me or the template."},
+            {"role": "user", "content": "The email you write cannot contain any special symbols for placeholders, such as {}, [], or <>. You must not include anything like that in your final email."},
             {"role": "user", "content": instructions}
         ]
     )
