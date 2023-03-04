@@ -89,7 +89,11 @@ def generate_email():
             {"role": "user", "content": "When working with a template, replace anything within each placeholder within more specific info based on context. Do not output the Subject unless instructed specifically to do so by me or the template."},
             {"role": "user", "content": "The email you write cannot contain any special symbols for placeholders, such as {}, [], or <>. You must not include anything like that in your final email."},
             {"role": "user", "content": instructions}
-        ]
+        ],
+        frequency_penalty=0,
+        presence_penalty=0.7,
+        # top_p=1,
+        # temperature=0
     )
     print("completion:", completion)
     output = completion["choices"][0]["message"]["content"]
@@ -141,7 +145,11 @@ def google():
 
 # summarize google search results
 def summarize_google_search_results(query, search_results):
+    
     search_results_string = json.dumps(search_results)
+    return search_results_string
+
+
     # generate the summary using OpenAI's ChatGPT API
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
