@@ -193,6 +193,28 @@ async def scrape_website(url):
             # return the visible text
             return visible_text
 
+# takes URL and Prompts and returns a summary according to prompt
+@demo_service_bp.route('/summarize_url', methods=['POST'])
+def summarize_url():
+    # get the request data
+    data = request.json
+
+    # get the visible text for the website
+    visible_text = get_visible_text(data['url'])
+    prompt = data['prompt']
+
+    # generate the summary using OpenAI's GPT-3
+    # response = openai.Completion.create(model="text-davinci-003", prompt="Correct this to standard English and then summarize what this company does in great details:\n" + visible_text, temperature=0, max_tokens=data['word_count'], top_p=1, frequency_penalty=0, presence_penalty=0)
+    completion = openai.ChatCompletion.create(
+      model="gpt-3.5-turbo",
+      messages=[
+            {"role": "user", "content": f"{prompt}:\n{visible_text}"}
+        ]
+    )
+    print("completion:", completion)
+    output = completion["choices"][0]["message"]["content"]
+
+    return output
 
 def get_visible_text(url):
     # check if an event loop is already running
