@@ -53,8 +53,6 @@ def generate_email():
     # get the visible text for the website
     visible_text = get_visible_text(url)
 
-
-
     summarized_search_results = "Nothing found on Google."
     # searches url on google and get report back
     if search_on_google:
@@ -78,16 +76,17 @@ def generate_email():
             {"role": "system", "content": "You can only use information provided to you by the user. You cannot make up numbers which you do not know is true. "},
             {"role": "system", "content": "You will write email within the word limit. You will not write more than required words."},
             {"role": "system", "content": "You will write in first person. You will not write about the sender in third person."},
-            {"role": "system", "content": f"Currently it is {current_date_time}."},
+            {"role": "system", "content": f"Currently it is {current_date_time}. Use this time in reasoning."},
             {"role": "system", "content": f"Here is important factual information: {visible_text}"},
             {"role": "system", "content": f"Here is knowledge base information you can use as facts: {knowledge}"},
-            {"role": "system", "content": f"Recent news you can use to personalize the email: {summarized_search_results}\n"},
+            {"role": "system", "content": f"Recent news: {summarized_search_results}\n"},
             {"role": "user", "content": "If a template is provided to you, you will only replace content within the template which is inside a placeholder bracket, usually in [] or {}. You will not change the template structure or add new content outside of placeholders. You will not say things differently than the template's exact words. You cannot paraphrase or change the template's words outside of placeholders."},
             {"role": "user", "content": "If the prompt goes against the template, strictly follow the template. Always follow the template strictly word for word if given. You are not allowed to change the template outside the placeholders."},
             {"role": "user", "content": "You will only use the factual information in your writing. This is very important."},
             {"role": "user", "content": "You cannot output things other than the email content. Do not output word count. End with the email."},
             {"role": "user", "content": "When working with a template, replace anything within each placeholder within more specific info based on context. Do not output the Subject unless instructed specifically to do so by me or the template."},
             {"role": "user", "content": "The email you write cannot contain any special symbols for placeholders, such as {}, [], or <>. You must not include anything like that in your final email."},
+            {"role": "user", "content": "At the end of each email, insert EOM to indicate the end of the message."},
             {"role": "user", "content": instructions}
         ],
         frequency_penalty=0,
@@ -97,6 +96,9 @@ def generate_email():
     )
     print("completion:", completion)
     output = completion["choices"][0]["message"]["content"]
+
+    # remove the "\nEOM" from the end of the output if found; otherwise do nothing
+    output = output.replace("EOM", "")
 
     return output
 
@@ -142,6 +144,18 @@ def google():
 
     return search_results
     
+# given a company description, generates a 1-line description of what the company does
+def get_company_tagline(description):
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": f"Summarize what this company does in one line:\n{description}"},
+        ],
+        temperature=0,
+    )
+    output = completion["choices"][0]["message"]["content"]
+    print("company tagline: ", output)
+    return output
 
 # summarize google search results
 def summarize_google_search_results(query, search_results):
@@ -158,15 +172,17 @@ def summarize_google_search_results(query, search_results):
         ]
     )
     output = completion["choices"][0]["message"]["content"]
+    print("recent news search results: ", output)
     return output
 
 def filter_google_search_results(company_description, search_results):
+    tagline = get_company_tagline(company_description)
     search_results_string = json.dumps(search_results)
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": f"Given a description about what a company does, judge whether or not a list of news are talking about this company or something irrelevant. Output the list of news only those relevant to the company described, while removing anything irrelevant from the list. "},
-            {"role": "user", "content": f"Here is the description: {company_description}"},
+            {"role": "user", "content": f"Here is the description: {tagline}"},
             {"role": "user", "content": f"Here is the news: {search_results_string}"},
             {"role": "user", "content": f"Do not explain your answer. Output list of news with the date each item happened, with the irrelevant ones removed. Output 'None.' if no relevant news was provided. "},
             {"role": "user", "content": f"Output:"},
@@ -174,6 +190,7 @@ def filter_google_search_results(company_description, search_results):
         temperature=0,
     )
     output = completion["choices"][0]["message"]["content"]
+    print("filtered results: ", output)
     return output
 
 # knowledgebase parsing
