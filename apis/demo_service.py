@@ -50,16 +50,16 @@ def generate_email():
 
     # parse knowledge base and add to prompt
     knowledge=parse_knowledge_base(knowledge_base)
+    # get the visible text for the website
+    visible_text = get_visible_text(url)
+
+
+
     summarized_search_results = "Nothing found on Google."
     # searches url on google and get report back
     if search_on_google:
         search_results = google_search(url)
-        # get domain from url
-        domain = url.split('/')[2:]
-        summarized_search_results = summarize_google_search_results(domain, search_results)
-
-    # get the visible text for the website
-    visible_text = get_visible_text(url)
+        summarized_search_results = filter_google_search_results(visible_text, search_results)
 
     instructions = generate_instructions_v2(sender_info, recipient_info, prompt, word_count, template)
 
@@ -81,7 +81,7 @@ def generate_email():
             {"role": "system", "content": f"Currently it is {current_date_time}."},
             {"role": "system", "content": f"Here is important factual information: {visible_text}"},
             {"role": "system", "content": f"Here is knowledge base information you can use as facts: {knowledge}"},
-            {"role": "system", "content": f"Recent news you can use as factual information: {summarized_search_results}\n"},
+            {"role": "system", "content": f"Recent news you can use to personalize the email: {summarized_search_results}\n"},
             {"role": "user", "content": "If a template is provided to you, you will only replace content within the template which is inside a placeholder bracket, usually in [] or {}. You will not change the template structure or add new content outside of placeholders. You will not say things differently than the template's exact words. You cannot paraphrase or change the template's words outside of placeholders."},
             {"role": "user", "content": "If the prompt goes against the template, strictly follow the template. Always follow the template strictly word for word if given. You are not allowed to change the template outside the placeholders."},
             {"role": "user", "content": "You will only use the factual information in your writing. This is very important."},
@@ -93,7 +93,7 @@ def generate_email():
         frequency_penalty=0,
         presence_penalty=0.7,
         # top_p=1,
-        temperature=0.1
+        temperature=0
     )
     print("completion:", completion)
     output = completion["choices"][0]["message"]["content"]
@@ -145,11 +145,7 @@ def google():
 
 # summarize google search results
 def summarize_google_search_results(query, search_results):
-    
     search_results_string = json.dumps(search_results)
-    return search_results_string
-
-
     # generate the summary using OpenAI's ChatGPT API
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -163,7 +159,22 @@ def summarize_google_search_results(query, search_results):
     )
     output = completion["choices"][0]["message"]["content"]
     return output
-    
+
+def filter_google_search_results(company_description, search_results):
+    search_results_string = json.dumps(search_results)
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": f"Given a description about what a company does, judge whether or not a list of news are talking about this company or something irrelevant. Output the list of news only those relevant to the company described, while removing anything irrelevant from the list. "},
+            {"role": "user", "content": f"Here is the description: {company_description}"},
+            {"role": "user", "content": f"Here is the news: {search_results_string}"},
+            {"role": "user", "content": f"Do not explain your answer. Output list of news with the date each item happened, with the irrelevant ones removed. Output 'None.' if no relevant news was provided. "},
+            {"role": "user", "content": f"Output:"},
+        ],
+        temperature=0,
+    )
+    output = completion["choices"][0]["message"]["content"]
+    return output
 
 # knowledgebase parsing
 def parse_knowledge_base(knowledge_base):
