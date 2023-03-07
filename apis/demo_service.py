@@ -53,7 +53,7 @@ def generate_email():
     # get the visible text for the website
     visible_text = get_visible_text(url)
 
-    summarized_search_results = "Nothing found on Google."
+    summarized_search_results = "None."
     # searches url on google and get report back
     if search_on_google:
         search_results = google_search(url)
@@ -184,7 +184,7 @@ def filter_google_search_results(company_description, search_results):
             {"role": "user", "content": f"Given a description about what a company does, judge whether or not a list of news are talking about this company or something irrelevant. Output the list of news only those relevant to the company described, while removing anything irrelevant from the list. "},
             {"role": "user", "content": f"Here is the description: {tagline}"},
             {"role": "user", "content": f"Here is the news: {search_results_string}"},
-            {"role": "user", "content": f"Do not explain your answer. Output list of news with the date each item happened, with the irrelevant ones removed. Output 'None.' if no relevant news was provided. "},
+            {"role": "user", "content": f"Do not explain your answer. Output list of news with the date each item happened and complete summary of the news, with the irrelevant ones removed. Output 'None.' if no relevant news was provided. "},
             {"role": "user", "content": f"Output:"},
         ],
         temperature=0,
