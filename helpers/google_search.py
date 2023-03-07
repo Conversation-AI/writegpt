@@ -15,7 +15,7 @@ def google_search(query, mode="company", num_results=5):
     date_restriction='m1' # Past month: m1, Past week: w1, Past 6 months: m6, Past year: y1
     site_urls=None
     # Construct the search query with regex
-    query += r" (news|blog|launch)"
+    query += r" (news|blog|launch|raise)"
     query = re.sub(r"\s+", r" ", query)
   else:
     date_restriction=None
