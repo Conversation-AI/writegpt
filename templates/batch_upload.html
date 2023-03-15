@@ -1,0 +1,73 @@
+{% extends "base.html" %} {% block title %}Batch Upload | WriteGPT{% endblock %}
+{% block content %}
+
+<div class="container mx-auto py-12 flex flex-col items-center">
+    <div class="container mx-auto grid grid-cols-2 gap-8">
+        <div class="rounded-lg shadow-lg p-8 flex flex-col" style="height:243px;">
+                <h2 class="text-xl text-gray-800 font-semibold mb-4" >BATCH UPLOAD</h2>
+             <ul class="text-m text-gray-500 font-semibold mb-4">
+                 <li>Only csv formats are accepted</li>
+                 <li>It should contain columns url,sender_info,recipient_info,word_count</li>
+                 <li>Optional columns : search_on_google(True/False), prompt, template, knowledge_base</li>
+                 <li>It will generate the output for all and write it to the csv file</li>
+             </ul>
+        </div>
+
+         <form id="upload_form" class="rounded-lg shadow-lg p-8 mb-4" method="post" action="/api/batch_upload" enctype="multipart/form-data">
+              <label class="text-m text-gray-800 font-semibold mb-10" for="batch_csvfile">Select a CSV file to upload:</label><br><br><br>
+              <input accept=".csv" type="file" id="batch_csvfile" name="batch_csvfile"><br>
+              <div class="mb-4">
+                <button
+                    id="submit-form-btn"
+                    class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+                    onclick="submit_form()"
+                >
+                    Upload
+                </button>
+            </div>
+         </form>
+    </div>
+
+    {% if table_data %}
+    <div class="overflow-x-auto">
+        <h2 class="text-xl text-gray-800 font-semibold mb-10 mt-10" >Upload STATUS</h2>
+        <!--Table-->
+        <table class="table table-auto w-full bg-white rounded-lg shadow-lg">
+
+              <!--Table head-->
+                <thead>
+                    <tr>
+                      <th class="px-4 py-2 text-left align-middle">File Name</th>
+                      <th class="px-4 py-2 text-left align-middle">Created AT</th>
+                      <th class="px-4 py-2 text-left align-middle">Status</th>
+                      <th class="px-4 py-2 text-left align-middle">URL</th>
+                    </tr>
+              </thead>
+              <!--Table head-->
+
+              <!--Table body-->
+              <tbody>
+                <tr class="table-info">
+                      <td class="px-4 py-2 text-left align-middle">Test.csv</td>
+                      <td class="px-4 py-2 text-left align-middle">14 March 2023</td>
+                      <td class="px-4 py-2 text-left align-middle">In progress</td>
+                      <td class="px-4 py-2 text-left align-middle">-</td>
+                </tr>
+              </tbody>
+              <!--Table body-->
+
+
+</table>
+        <!--Table-->
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+<script>
+    function submit_form(){
+        $("#upload_form").submit();
+    }
+</script>
+{% block scripts %}
+{% endblock %}

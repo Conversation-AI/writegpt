@@ -26,6 +26,7 @@ from webhooks.stripe import stripe_bp
 from apis.service import service_bp
 from views.views import views_bp
 from apis.demo_service import demo_service_bp
+from apis.batch_upload import batch_upload_bp
 
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(user_bp, url_prefix='/api/user')
@@ -35,6 +36,7 @@ app.register_blueprint(key_bp, url_prefix='/api/key')
 app.register_blueprint(service_bp, url_prefix='/api/v1')
 app.register_blueprint(views_bp)
 app.register_blueprint(demo_service_bp, url_prefix='/api/demo')
+app.register_blueprint(batch_upload_bp, url_prefix='/api/batch_upload')
 
 
 @app.route('/generate_email', methods=['POST'])
