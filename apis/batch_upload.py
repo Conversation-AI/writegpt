@@ -159,8 +159,8 @@ def parse_csv_recieve_output():
     print("here in batch upload")
     user_id = get_jwt_identity()
     user = User.get_by_id(user_id)
-    # print(user_id, "user id")
-    # print(user, "user")
+    print(user_id, "user id")
+    print(user, "user")
     print(user.email, user.id, "user")
     # user_id = 12333
     # user = {"id": 12333, "email": "chandnigoyal01@gmail.com"}

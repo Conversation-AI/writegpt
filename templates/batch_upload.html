@@ -72,8 +72,10 @@
 
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="/static/js/protected.js"></script>
 <script>
     var interval;
+    const jwtToken = localStorage.getItem("jwtToken");
 
     $("form#upload_form").submit(function(e) {
         e.preventDefault();
@@ -86,7 +88,7 @@
                     type: 'POST',
                     data: formData,
                     beforeSend: function (xhr) {
-                            xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3OTU4OTcwMCwianRpIjoiNmI1MzhmZDItYmFiZS00NmZiLWE5ZTUtMmZmYmRlNWE4YWExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImtIc2VjdXNTQXFhV1d5QVk3U3FqIiwibmJmIjoxNjc5NTg5NzAwLCJleHAiOjE3MTA2OTM3MDB9.WOnWlHw62RhRvBr4r5OobZ5UWKfmYefIQjld_2au_Ew');
+                            xhr.setRequestHeader('Authorization', 'Bearer '+jwtToken);
                         },
                     success: function (data) {
                         $("#success-msg").removeClass("hide");
@@ -109,7 +111,7 @@
                     url: "/api/batch_upload/fetch_upload_progress_report?docID="+docID,
                     type: 'GET',
                     beforeSend: function (xhr) {
-                            xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3OTU4OTcwMCwianRpIjoiNmI1MzhmZDItYmFiZS00NmZiLWE5ZTUtMmZmYmRlNWE4YWExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImtIc2VjdXNTQXFhV1d5QVk3U3FqIiwibmJmIjoxNjc5NTg5NzAwLCJleHAiOjE3MTA2OTM3MDB9.WOnWlHw62RhRvBr4r5OobZ5UWKfmYefIQjld_2au_Ew');
+                            xhr.setRequestHeader('Authorization', 'Bearer '+jwtToken);
                         },
                     success: function (data) {
                        console.log(data["data"]);
@@ -151,7 +153,7 @@
                 url: '/api/batch_upload',
                 type: 'POST',
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY3OTU4OTcwMCwianRpIjoiNmI1MzhmZDItYmFiZS00NmZiLWE5ZTUtMmZmYmRlNWE4YWExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImtIc2VjdXNTQXFhV1d5QVk3U3FqIiwibmJmIjoxNjc5NTg5NzAwLCJleHAiOjE3MTA2OTM3MDB9.WOnWlHw62RhRvBr4r5OobZ5UWKfmYefIQjld_2au_Ew');
+                    xhr.setRequestHeader('Authorization', 'Bearer '+jwtToken);
                 },
                 enctype: 'multipart/form-data',
                 data: formData,
