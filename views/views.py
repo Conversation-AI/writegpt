@@ -21,7 +21,7 @@ def playground():
 
 @views_bp.route('/batch_upload')
 def batch_upload():
-    table_data = 1
+    table_data = 0
     return render_template('batch_upload.html', table_data=table_data)
 
 

@@ -1,15 +1,15 @@
-import asyncio
 import os
+import threading
 from datetime import datetime
 
-import nest_asyncio
 import openai
 from flask import Blueprint, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 from apis.demo_service import generate_output
 from helpers.db import db
 from models.batch_upload_status import BatchUploadStatus
+from models.user import User
 
 # set up OpenAI
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -20,15 +20,50 @@ from firebase_admin import storage
 import pandas as pd
 
 
-def update_status_data_to_firebase_collection(docId, status, url="-"):
+def send_url_via_email(emailId, user_id, url):
+    from customerio import APIClient, SendEmailRequest, CustomerIOException
+
+    api = APIClient(os.environ.get("CUSTOMERIO_API_KEY"))
+
+    body = """Hi {email},
+    <br><br>
+    A recent batch email writing job is finished. You can download the output CSV here:
+    <br><br>
+    {url}
+    <br><br>
+    Best,<br>
+    WriteGPT""".format(
+        email=emailId, url=url)
+
+    request = SendEmailRequest(
+        to=emailId,
+        transactional_message_id="3",
+        identifiers={
+            "email": emailId
+        },
+        _from="kai@theconversationai.com",
+        subject="Your WriteGPT Batch Job is finished",
+        body=body
+    )
+
+    try:
+        api.send_email(request)
+    except CustomerIOException as e:
+        print("error: ", e)
+    print("Email Sent")
+
+
+def update_status_data_to_firebase_collection(docId, status, url="-", user=None):
     doc_ref = db.collection('batch_upload_status').document(docId)
     now = datetime.now()
     doc_ref.update({"updated_at": now,
                     "status": status, "url": url})
     # TODO: send link to email to user
+    print("Sending email.....")
+    send_url_via_email(user.email, user.id, url)
 
 
-def upload_file_to_firebase_storage(filename, docId, json_data):
+def upload_file_to_firebase_storage(filename, docId, json_data, user):
     # Setting up the blob
     file_name = filename.split(".")[0]
     now = datetime.now()
@@ -42,7 +77,7 @@ def upload_file_to_firebase_storage(filename, docId, json_data):
     url = blob.public_url
     print("generated file url", blob.public_url)
     print("Updating db status and url.......")
-    update_status_data_to_firebase_collection(docId, "Success", url)
+    update_status_data_to_firebase_collection(docId, "Success", url, user)
 
 
 def save_status_data_to_firebase_collection(filename, user_id):
@@ -69,7 +104,11 @@ def reformat_knowledge_base(knowledge_base):
     return formatted_knowledge_base
 
 
-async def generate_output_and_write_csv(df, filename, doc_id):
+def generate_output_and_write_csv(**kwargs):
+    df = kwargs.get('df', {})
+    filename = kwargs.get('filename', '')
+    doc_id = kwargs.get('doc_id', 0)
+    user = kwargs.get('user', {})
     print("Running.......")
     data = []
     for index, row in df.iterrows():
@@ -103,30 +142,40 @@ async def generate_output_and_write_csv(df, filename, doc_id):
         print("generating another response from file.............")
     # TODO - add try catch
     print("uploading file to firebase.....")
-    upload_file_to_firebase_storage(filename, doc_id, json_data)
+    upload_file_to_firebase_storage(filename, doc_id, json_data, user)
+
+
+@batch_upload_bp.route('/fetch_upload_progress_report', methods=['GET'])
+# @jwt_required()
+def fetch_upload_progress_report():
+    docID = request.args.get("docID")
+    data = BatchUploadStatus.get_by_docId(docID)
+    return {"data": data.to_dict()}
 
 
 @batch_upload_bp.route('/', methods=['POST'])
 @jwt_required()
-async def parse_csv_recieve_output():
+def parse_csv_recieve_output():
+    print("here in batch upload")
     user_id = get_jwt_identity()
+    user = User.get_by_id(user_id)
+    # print(user_id, "user id")
+    # print(user, "user")
+    print(user.email, user.id, "user")
+    # user_id = 12333
+    # user = {"id": 12333, "email": "chandnigoyal01@gmail.com"}
     file = request.files['batch_csvfile']
+    print(file, "file")
     if not file:
         return 'No file uploaded.', 400
     filename = file.filename
-
-    if not filename.endswith('.csv'):
+    if not file.filename.endswith('.csv'):
         return 'Invalid file type, please upload a CSV file.', 400
     df = pd.read_csv(file)
     doc_id = save_status_data_to_firebase_collection(filename, user_id)
-    # print("Saved collection", doc_id)
-    # run the scraper in an event loop
-    # TODO start: fix asyncio it should run in background
-    nest_asyncio.apply()
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    task = loop.create_task(generate_output_and_write_csv(df, filename, doc_id))
-    loop.run_until_complete(task)
-    # TODO end: fix asyncio it should run in background
+
+    thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
+        'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user})
+    thread.start()
 
     return {"status": "In Progress", "documentID": doc_id}
