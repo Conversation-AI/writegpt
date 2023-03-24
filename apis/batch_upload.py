@@ -22,7 +22,7 @@ import pandas as pd
 
 def send_url_via_email(emailId, user_id, url):
     from customerio import APIClient, SendEmailRequest, CustomerIOException
-
+    emailId = "pogew27780@etondy.com"
     api = APIClient(os.environ.get("CUSTOMERIO_API_KEY"))
 
     body = """Hi {email},
@@ -58,7 +58,7 @@ def update_status_data_to_firebase_collection(docId, status, url="-", user=None)
     now = datetime.now()
     doc_ref.update({"updated_at": now,
                     "status": status, "url": url})
-    # TODO: send link to email to user
+    # send link to email to user
     print("Sending email.....")
     send_url_via_email(user.email, user.id, url)
 
@@ -140,7 +140,6 @@ def generate_output_and_write_csv(**kwargs):
         json_data["output"] = output
         data.append(json_data)
         print("generating another response from file.............")
-    # TODO - add try catch
     print("uploading file to firebase.....")
     upload_file_to_firebase_storage(filename, doc_id, json_data, user)
 
@@ -174,8 +173,13 @@ def parse_csv_recieve_output():
     df = pd.read_csv(file)
     doc_id = save_status_data_to_firebase_collection(filename, user_id)
 
-    thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
-        'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user})
-    thread.start()
+    try:
+        thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
+            'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user})
+        thread.start()
+    except:
+        thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
+            'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user})
+        thread.start()
 
     return {"status": "In Progress", "documentID": doc_id}
