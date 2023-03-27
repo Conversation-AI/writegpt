@@ -22,7 +22,6 @@ import pandas as pd
 
 def send_url_via_email(emailId, user_id, url):
     from customerio import APIClient, SendEmailRequest, CustomerIOException
-    emailId = "pogew27780@etondy.com"
     api = APIClient(os.environ.get("CUSTOMERIO_API_KEY"))
 
     body = """Hi {email},
@@ -50,7 +49,7 @@ def send_url_via_email(emailId, user_id, url):
         api.send_email(request)
     except CustomerIOException as e:
         print("error: ", e)
-    print("Email Sent")
+    print("Email Sent at : ",emailId)
 
 
 def update_status_data_to_firebase_collection(docId, status, url="-", user=None):
@@ -145,11 +144,19 @@ def generate_output_and_write_csv(**kwargs):
 
 
 @batch_upload_bp.route('/fetch_upload_progress_report', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def fetch_upload_progress_report():
-    docID = request.args.get("docID")
-    data = BatchUploadStatus.get_by_docId(docID)
-    return {"data": data.to_dict()}
+    docID = request.args.get("docID", None)
+    userID = request.args.get("userID", False)
+
+    if docID is not None:
+        data = BatchUploadStatus.get_by_docId(docID)
+        return {"data": data.to_dict()}
+
+    if userID:
+        userID = get_jwt_identity()
+        user_data = BatchUploadStatus.get_by_userId(userID)
+        return {"data": user_data}
 
 
 @batch_upload_bp.route('/', methods=['POST'])

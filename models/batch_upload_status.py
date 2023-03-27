@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from firebase_admin import firestore
+
 from helpers.db import db
 
 
@@ -50,6 +52,21 @@ class BatchUploadStatus:
             return data
         else:
             return None
+
+    @staticmethod
+    def get_by_userId(userId):
+        doc_ref = db.collection('batch_upload_status').where('user_id', '==', userId).\
+            order_by("created_at", direction=firestore.Query.DESCENDING).limit(6)
+        docs = doc_ref.get()
+        if len(docs) > 0:
+            all_data = []
+            for doc in docs:
+                data = BatchUploadStatus.from_dict(doc.to_dict())
+                data.id = doc.id
+                all_data.append(data.to_dict())
+            return all_data
+        else:
+            return []
 
     @staticmethod
     def from_dict(doc_dict):

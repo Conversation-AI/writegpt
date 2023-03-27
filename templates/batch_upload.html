@@ -27,7 +27,6 @@
                     id="submit-form-btn"
                     class="mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold
                      py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-                    onclick="submit_form()"
                 >
                     Upload
                 </button>
@@ -36,7 +35,7 @@
     </div>
 
     <div class="container mx-auto grid grid-cols-1 align-middle bg-white" style="padding:50px; margin: 0 auto;">
-        <div class="overflow-x-auto align-middle" id="upload_table" style="margin: 0 auto;">
+        <div class="overflow-x-auto align-middle hide" id="upload_table" style="margin: 0 auto;">
         <h2 class="text-2xl font-bold mb-4">Upload STATUS</h2>
         <!--Table-->
        <table class="table-auto w-full" style="width:700px;">
@@ -53,14 +52,14 @@
               <!--Table head-->
 
               <!--Table body-->
-              <tbody>
-                <tr class="table-info">
-                      <td class="border px-4 py-2 align-middle" id="filename">Test.csv</td>
-                      <td class="border px-4 py-2 align-middle" id="created">14 March 2023</td>
-                      <td class="border px-4 py-2 align-middle" id="status">In progress</td>
-                      <td class="border px-4 py-2 align-middle" id="url" width="40px">https://storage.googleapis.com/writegpt-cai.appspot.com/WriteGPT%20Format%20-%20Input%20Format-output2023-03-24%2023%3A08%3A35.744243.csv</td>
+              <tbody id="table_rows">
+<!--                <tr class="table-info">-->
+<!--                      <td class="border px-4 py-2 align-middle" id="filename">Test.csv</td>-->
+<!--                      <td class="border px-4 py-2 align-middle" id="created">14 March 2023</td>-->
+<!--                      <td class="border px-4 py-2 align-middle" id="status">In progress</td>-->
+<!--&lt;!&ndash;                      <td class="border px-4 py-2 align-middle" id="url" width="40px">https://storage.googleapis.com/writegpt-cai.appspot.com/WriteGPT%20Format%20-%20Input%20Format-output2023-03-24%2023%3A08%3A35.744243.csv</td>&ndash;&gt;-->
 <!--                    <td class="border px-4 py-2 align-middle" id="url" width="40px">-</td>-->
-                </tr>
+<!--                </tr>-->
               </tbody>
               <!--Table body-->
 
@@ -74,8 +73,25 @@
 
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="/static/js/protected.js"></script>
 <script>
+
+    function getJwtToken() {
+        // Read the JWT token from the localStorage
+        return localStorage.getItem("jwtToken");
+    }
+
+    window.onload = function () {
+        const jwtToken = getJwtToken();
+        if (!jwtToken) {
+
+            window.location.href = "/signup";
+            return;
+        }else{
+            get_data_from_userID();
+        }
+
+    };
+
     var interval;
     const jwtToken = localStorage.getItem("jwtToken");
 
@@ -108,7 +124,7 @@
     });
 
     function get_data_from_docID(docID){
-        console.log("docID "+docID);
+        //console.log("docID "+docID);
             $.ajax({
                     url: "/api/batch_upload/fetch_upload_progress_report?docID="+docID,
                     type: 'GET',
@@ -119,10 +135,8 @@
                        console.log(data["data"]);
                        result = data["data"];
                        status = result["status"];
-                       $("#url").html(result["url"]);
-                       $("#created").html(result["created_at"]);
-                       $("#status").html(result["status"]);
-                       $("#filename").html(result["filename"]);
+                       $(".attached_row").remove();
+                       $("#table_rows").prepend('<tr class="table-info attached_row"><td class="border px-4 py-2 align-middle">'+result["filename"]+'</td><td class="border px-4 py-2 align-middle">'+result["created_at"]+'</td><td class="border px-4 py-2 align-middle">'+result["status"]+'</td><td class="border px-4 py-2 align-middle">'+result["url"]+'</td></tr>');
                        $("#upload_table").removeClass('hide');
                        if(status == "Success"){
                             clearInterval(interval);
@@ -132,41 +146,6 @@
                     contentType: false,
                     processData: false
                 });
-    }
-
-    function submit_form(){
-            var validate = validate_file();
-            if(validate){
-                $("#success-msg").removeClass("hide");
-                $("#success-msg").fadeTo(2000, 1500).slideUp(1500, function(){
-                    $("#success-msg").slideUp(1500);
-                });
-                //$("#upload_form").submit();
-                upload_data_api();
-             }
-
-        }
-
-    function upload_data_api(){
-        var fileInput = document.getElementById('batch_csvfile');
-         var selectedFile = fileInput.files[0];
-         var formData = new FormData($("#batch_csvfile")[0]);
-            $.ajax({
-                url: '/api/batch_upload',
-                type: 'POST',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Authorization', 'Bearer '+jwtToken);
-                },
-                enctype: 'multipart/form-data',
-                data: formData,
-                success: function (data) {
-                    alert(data);
-                    console.log(data);
-                 },
-                error: function () { },
-                });
-
-
     }
 
     function validate_file(){
@@ -183,6 +162,31 @@
 
             return 1;
     }
+
+    function get_data_from_userID(){
+        console.log("userId api ");
+            $.ajax({
+                    url: "/api/batch_upload/fetch_upload_progress_report?userID=true",
+                    type: 'GET',
+                    beforeSend: function (xhr) {
+                            xhr.setRequestHeader('Authorization', 'Bearer '+jwtToken);
+                        },
+                    success: function (data) {
+                       console.log("success results "+data["data"]);
+                       all_results = data["data"];
+                       for (let i = 0; i < all_results.length; i++) {
+                            result = all_results[i];
+                            $("#table_rows").last().append('<tr class="table-info"><td class="border px-4 py-2 align-middle">'+result["filename"]+'</td><td class="border px-4 py-2 align-middle">'+result["created_at"]+'</td><td class="border px-4 py-2 align-middle">'+result["status"]+'</td><td class="border px-4 py-2 align-middle">'+result["url"]+'</td></tr>');
+                            $("#upload_table").removeClass('hide');
+                        }
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+    }
+
+
 
 
 </script>

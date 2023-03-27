@@ -49,7 +49,6 @@ def register():
   try:
       # Save user to Firestore
       user.save()
-
       # Log in user and return JWT token
       jwt_token = create_jwt_token(user.id)
       return {'message': 'User registered successfully.', 'token': jwt_token}, 200
