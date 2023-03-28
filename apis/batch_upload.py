@@ -49,7 +49,7 @@ def send_url_via_email(emailId, user_id, url):
         api.send_email(request)
     except CustomerIOException as e:
         print("error: ", e)
-    print("Email Sent at : ",emailId)
+    print("Email Sent at : ", emailId)
 
 
 def update_status_data_to_firebase_collection(docId, status, url="-", user=None):
@@ -58,8 +58,9 @@ def update_status_data_to_firebase_collection(docId, status, url="-", user=None)
     doc_ref.update({"updated_at": now,
                     "status": status, "url": url})
     # send link to email to user
-    print("Sending email.....")
-    send_url_via_email(user.email, user.id, url)
+    if status == "Success":
+        print("Sending email.....")
+        send_url_via_email(user.email, user.id, url)
 
 
 def upload_file_to_firebase_storage(filename, docId, json_data, user):
@@ -108,39 +109,49 @@ def generate_output_and_write_csv(**kwargs):
     filename = kwargs.get('filename', '')
     doc_id = kwargs.get('doc_id', 0)
     user = kwargs.get('user', {})
-    print("Running.......")
-    data = []
-    for index, row in df.iterrows():
-        # get info from row and parse it to api
-        json_data = {
-            "url": row["url"],
-            "sender_info": row["sender_info"],
-            "recipient_info": row["recipient_info"],
-            "word_count": row["word_count"],
-        }
+    retry_count = kwargs.get('retry_count', 0)
+    try:
+        print("Running.......")
+        data = []
+        for index, row in df.iterrows():
+            # get info from row and parse it to api
+            json_data = {
+                "url": row["url"],
+                "sender_info": row["sender_info"],
+                "recipient_info": row["recipient_info"],
+                "word_count": row["word_count"],
+            }
 
-        if row["search_on_google"] != '' and row["search_on_google"] is not None:
-            if not isinstance(row["search_on_google"], bool):
-                search_on_google = row["search_on_google"].upper()
-            else:
-                search_on_google = row["search_on_google"]
-            json_data["search_on_google"] = search_on_google
+            if row["search_on_google"] != '' and row["search_on_google"] is not None:
+                if not isinstance(row["search_on_google"], bool):
+                    search_on_google = row["search_on_google"].upper()
+                else:
+                    search_on_google = row["search_on_google"]
+                json_data["search_on_google"] = search_on_google
 
-        if row["prompt"] is not None or row["prompt"] != "":
-            json_data["prompt"] = row["prompt"]
+            if row["prompt"] is not None or row["prompt"] != "":
+                json_data["prompt"] = row["prompt"]
 
-        if row["template"] is not None or row["template"] != "":
-            json_data["template"] = row["template"]
+            if row["template"] is not None or row["template"] != "":
+                json_data["template"] = row["template"]
 
-        if row["knowledge_base"] is not None or row["knowledge_base"] != "":
-            json_data["knowledge_base"] = reformat_knowledge_base(row["knowledge_base"])
+            if row["knowledge_base"] is not None or row["knowledge_base"] != "":
+                json_data["knowledge_base"] = reformat_knowledge_base(row["knowledge_base"])
 
-        output = generate_output(json_data)
-        json_data["output"] = output
-        data.append(json_data)
-        print("generating another response from file.............")
-    print("uploading file to firebase.....")
-    upload_file_to_firebase_storage(filename, doc_id, json_data, user)
+            output = generate_output(json_data)
+            json_data["output"] = output
+            data.append(json_data)
+            print("generating another response from file.............")
+        print("uploading file to firebase.....")
+        upload_file_to_firebase_storage(filename, doc_id, json_data, user)
+    except:
+        print("Failed....")
+        update_status_data_to_firebase_collection(doc_id, "Failed", url="-", user=None)
+        if retry_count == 0:
+            print("Retrying...")
+            thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
+                'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user, 'retry_count': 1})
+            thread.start()
 
 
 @batch_upload_bp.route('/fetch_upload_progress_report', methods=['GET'])
@@ -180,13 +191,13 @@ def parse_csv_recieve_output():
     df = pd.read_csv(file)
     doc_id = save_status_data_to_firebase_collection(filename, user_id)
 
-    try:
-        thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
-            'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user})
-        thread.start()
-    except:
-        thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
-            'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user})
-        thread.start()
+    # try:
+    thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
+        'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user, 'retry_count': 0})
+    thread.start()
+    # except:
+    #     thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
+    #         'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user})
+    #     thread.start()
 
     return {"status": "In Progress", "documentID": doc_id}

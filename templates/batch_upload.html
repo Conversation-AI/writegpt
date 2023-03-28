@@ -138,7 +138,7 @@
                        $(".attached_row").remove();
                        $("#table_rows").prepend('<tr class="table-info attached_row"><td class="border px-4 py-2 align-middle">'+result["filename"]+'</td><td class="border px-4 py-2 align-middle">'+result["created_at"]+'</td><td class="border px-4 py-2 align-middle">'+result["status"]+'</td><td class="border px-4 py-2 align-middle">'+result["url"]+'</td></tr>');
                        $("#upload_table").removeClass('hide');
-                       if(status == "Success"){
+                       if(status == "Success" || status == "Failed"){
                             clearInterval(interval);
                        }
                     },
@@ -176,7 +176,7 @@
                        all_results = data["data"];
                        for (let i = 0; i < all_results.length; i++) {
                             result = all_results[i];
-                            $("#table_rows").last().append('<tr class="table-info"><td class="border px-4 py-2 align-middle">'+result["filename"]+'</td><td class="border px-4 py-2 align-middle">'+result["created_at"]+'</td><td class="border px-4 py-2 align-middle">'+result["status"]+'</td><td class="border px-4 py-2 align-middle">'+result["url"]+'</td></tr>');
+                            $("#table_rows").last().append('<tr class="table-info"><td class="border px-4 py-2 align-middle">'+result["filename"]+'</td><td class="border px-4 py-2 align-middle">'+result["created_at"]+'</td><td class="border px-4 py-2 align-middle">'+result["status"]+'</td><td class="border px-4 py-2 align-middle"><a href="'+result["url"]+'">'+result["url"]+'</a></td></tr>');
                             $("#upload_table").removeClass('hide');
                         }
                     },
