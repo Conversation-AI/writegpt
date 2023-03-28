@@ -143,9 +143,9 @@ def generate_output_and_write_csv(**kwargs):
             data.append(json_data)
             print("generating another response from file.............")
         print("uploading file to firebase.....")
-        upload_file_to_firebase_storage(filename, doc_id, json_data, user)
-    except:
-        print("Failed....")
+        upload_file_to_firebase_storage(filename, doc_id, data, user)
+    except Exception as e:
+        print("Failed....",str(e))
         update_status_data_to_firebase_collection(doc_id, "Failed", url="-", user=None)
         if retry_count == 0:
             print("Retrying...")
