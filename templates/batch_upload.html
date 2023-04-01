@@ -4,16 +4,32 @@
       .max-w-lg {
         max-width: 750px !important;
     }
+    .loader{
+          position: fixed;
+          left: 0px;
+          top: 0px;
+          width: 100%;
+          height: 100%;
+          z-index: 9999;
+          background: url('//upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Phi_fenomeni.gif/50px-Phi_fenomeni.gif')
+                      50% 50% no-repeat rgb(249,249,249);
+        }
 
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
 </style>
 {% endblock %}
 {% block content %}
+<div class="loader hide" id="loader"></div>
 
 <div class="container mx-auto pt-8" xmlns="http://www.w3.org/1999/html">
   <div class="max-w-lg mx-auto mt-8">
     <div class="bg-white rounded-lg shadow-lg p-8">
       <h2 class="text-2xl font-bold mb-4">File Upload</h2>
+         {% include 'messagebox.html' %}
         <form id="upload_form" method="post" action="/api/batch_upload" enctype="multipart/form-data"  style="margin-right:10px;">
         <div class="mb-4">
           <label for="batch_csvfile" class="block text-gray-700 font-bold mb-2">
@@ -85,7 +101,8 @@
     $("form#upload_form").submit(function(e) {
         e.preventDefault();
         var formData = new FormData(this);
-
+         // TODO - add loader
+         $("#loader").removeClass("hide");
         var validate = validate_file();
             if(validate){
                 $.ajax({
@@ -96,10 +113,6 @@
                             xhr.setRequestHeader('Authorization', 'Bearer '+jwtToken);
                         },
                     success: function (data) {
-                        $("#success-msg").removeClass("hide");
-                        $("#success-msg").fadeTo(2000, 2500).slideUp(2500, function(){
-                            $("#success-msg").slideUp(2500);
-                        });
                         interval = setInterval( function() { get_data_from_docID(data["documentID"]); }, 10000);
 
                     },
@@ -120,6 +133,7 @@
                         },
                     success: function (data) {
                        console.log(data["data"]);
+                       $("#loader").addClass("hide");
                        result = data["data"];
                        status = result["status"];
                        $(".attached_row").remove();
@@ -127,6 +141,12 @@
                        $("#upload_table").removeClass('hide');
                        if(status == "Success" || status == "Failed"){
                             clearInterval(interval);
+                       }
+                       if(status == "Success"){
+                             // show alert
+                             showSuccess("You will recieve the output file link to your email shortly");
+                             setTimeout(function() { hideMessageBox(); }, 6000);
+
                        }
                     },
                     cache: false,
