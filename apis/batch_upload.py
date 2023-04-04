@@ -113,7 +113,10 @@ def generate_output_and_write_csv(**kwargs):
     try:
         print("Running.......")
         data = []
+        count = 1
         for index, row in df.iterrows():
+            print("_______________________")
+            print("Row Count ",count)
             # get info from row and parse it to api
             json_data = {
                 "url": row["url"],
@@ -141,17 +144,18 @@ def generate_output_and_write_csv(**kwargs):
             output = generate_output(json_data)
             json_data["output"] = output
             data.append(json_data)
-            print("generating another response from file.............")
+            # print("generating another response from file.............")
+            count = count + 1
         print("uploading file to firebase.....")
         upload_file_to_firebase_storage(filename, doc_id, data, user)
     except Exception as e:
-        print("Failed....",str(e))
+        print("Failed....", str(e))
         update_status_data_to_firebase_collection(doc_id, "Failed", url="-", user=None)
-        if retry_count == 0:
-            print("Retrying...")
-            thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
-                'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user, 'retry_count': 1})
-            thread.start()
+        # if retry_count == 0:
+        #     print("Retrying...")
+        #     thread = threading.Thread(target=generate_output_and_write_csv, kwargs={
+        #         'df': df, 'filename': filename, 'doc_id': doc_id, 'user': user, 'retry_count': 1})
+        #     thread.start()
 
 
 @batch_upload_bp.route('/fetch_upload_progress_report', methods=['GET'])
