@@ -152,7 +152,7 @@
         e.preventDefault();
         var formData = new FormData(this);
          // TODO - add loader
-         $("body").removeClass("show-loader");
+         $("body").addClass("show-loader");
         var validate = validate_file();
             if(validate){
                 $.ajax({
@@ -183,12 +183,12 @@
                         },
                     success: function (data) {
                        console.log(data["data"]);
-                       $("body").addClass("show-loader");
                        result = data["data"];
                        status = result["status"];
                        $(".attached_row").remove();
                        $("#table_rows").prepend('<tr class="table-info attached_row"><td class="border px-4 py-2 align-middle">'+result["filename"]+'</td><td class="border px-4 py-2 align-middle">'+result["created_at"]+'</td><td class="border px-4 py-2 align-middle">'+result["status"]+'</td><td class="border px-4 py-2 align-middle"><a href="'+result["url"]+'">'+result["url"]+'</a></td></tr>');
                        $("#upload_table").removeClass('hide');
+                       $("body").removeClass("show-loader");
                        if(status == "Success" || status == "Failed"){
                             clearInterval(interval);
                        }
