@@ -6,9 +6,11 @@ import nest_asyncio
 import openai
 import os
 from bs4 import BeautifulSoup
-from flask import Blueprint, request
+from flask import Blueprint, request, session
 
 from helpers.google_search import google_search
+from helpers.record_usage import update_usage_record_by_user
+from models.user import User
 
 # set up OpenAI
 openai.api_key = os.environ.get("OPENAI_API_KEY")
@@ -116,6 +118,10 @@ def generate_email():
     # get the request data
     request_data = request.get_json()
     output = generate_output(request_data)
+    user_id = session.get("user_id")
+    user = User.get_by_id(user_id)
+    # UPDATE USAGE RECORD
+    update_usage_record_by_user(user)
     return output
 
 

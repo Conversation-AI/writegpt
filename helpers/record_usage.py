@@ -2,6 +2,7 @@ import stripe, os, time
 
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
 
+
 # Helper function that updates usage record given a user
 def update_usage_record_by_user(user):
     subscription_item_id = user.subscription_item_id
@@ -11,3 +12,5 @@ def update_usage_record_by_user(user):
         quantity=1,
         timestamp=int(time.time()),
     )
+
+    print("usage record added/updated")

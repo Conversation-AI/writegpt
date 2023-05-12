@@ -8,6 +8,7 @@ from models.api_key import ApiKey
 
 # set up the Flask app
 app = Flask(__name__)
+app.secret_key = "AOD&%DN(&**^DnD&*&&E$"
 
 # Load environment variables from .env file
 load_dotenv()

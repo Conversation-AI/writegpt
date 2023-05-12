@@ -1,10 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session, redirect
 
-from models.batch_upload_status import BatchUploadStatus
+from models.user import User
 
 views_bp = Blueprint('views', __name__)
 
-from flask import Blueprint, request
 
 # website routes
 @views_bp.route('/buy')
@@ -19,7 +18,15 @@ def pricing():
 
 @views_bp.route('/playground')
 def playground():
-    return render_template('playground.html')
+    user_id = session.get("user_id")
+    if user_id is None:
+        return redirect("/signup")
+    user = User.get_by_id(user_id)
+    print(user.id, user.email, "user_id ")
+    if user.billing_status == "active":
+        return render_template('playground.html')
+    else:
+        return redirect('/pricing')
 
 
 @views_bp.route('/batch_upload')
