@@ -118,7 +118,7 @@ def handle_customer_subscription_created(event):
         user.save()
     else:
         # If the user is not found, create a new user record
-        user = User(customer_id=customer_id, subscription_id=subscription_id, subscription_item_id=subscription_item_id, billing_status=subscription_status, subscription_item_id=subscription_item_id, billing_status=subscription_status)
+        user = User(customer_id=customer_id, subscription_id=subscription_id, subscription_item_id=subscription_item_id, billing_status=subscription_status)
         user.save()
 
 # Handle customer.subscription.updated webhook event
