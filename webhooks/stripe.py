@@ -49,7 +49,7 @@ def handle_customer_created(event):
     customer_name = event['data']['object']['name']
 
     # Search for the user by email address
-    user = User.get_by_email(customer_email)
+    user = User.get_by_email(customer_email) or User.get_by_customer_id(customer_id)
 
     if user:
         # Update the user's customer ID and name
@@ -115,6 +115,10 @@ def handle_customer_subscription_created(event):
         user.subscription_id = subscription_id
         user.subscription_item_id = subscription_item_id
         user.billing_status = subscription_status
+        user.save()
+    else:
+        # If the user is not found, create a new user record
+        user = User(customer_id=customer_id, subscription_id=subscription_id, subscription_item_id=subscription_item_id, billing_status=subscription_status, subscription_item_id=subscription_item_id, billing_status=subscription_status)
         user.save()
 
 # Handle customer.subscription.updated webhook event
